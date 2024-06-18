@@ -8,14 +8,15 @@ def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = request.headers.get('x-access-token')
+        current_app.logger.debug('Token received: %s', token)
         if not token:
             return jsonify({'message': 'Token is missing!'}), 401
 
         try:
-            # Decode the token
             data = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=["HS256"])
-            # Find the user by ID from the token's payload
+            current_app.logger.debug('Token data: %s', data)
             current_user = User.find_by_id(ObjectId(data['user_id']))
+            current_app.logger.debug('Current user: %s', current_user)
             if not current_user:
                 return jsonify({'message': 'User not found!'}), 401
         except jwt.ExpiredSignatureError:

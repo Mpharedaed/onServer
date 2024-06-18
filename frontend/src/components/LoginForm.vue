@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -40,33 +42,30 @@ export default {
     async submitForm() {
       this.errorMessage = '';  // Clear any previous error messages
       try {
-        const response = await fetch('/api/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            username: this.username,
-            password: this.password
-          })
+        const response = await axios.post('http://127.0.0.1:5000/api/login', {
+          username: this.username,
+          password: this.password
         });
 
-        const data = await response.json();
-
-        if (response.ok) {
-          localStorage.setItem('token', data.token);
-          this.$store.dispatch('login', data.token);
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token);
+          this.$store.dispatch('login', response.data.token);
           this.$router.push('/dashboard');
         } else {
-          this.errorMessage = data.error || 'An error occurred. Please try again.';
+          this.errorMessage = response.data.error || 'An error occurred. Please try again.';
         }
       } catch (error) {
-        this.errorMessage = 'An error occurred. Please try again.';
+        this.errorMessage = error.response ? error.response.data.error : 'An error occurred. Please try again.';
       }
     }
   }
 };
 </script>
+
+<style scoped>
+/* Add your styles here */
+</style>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');

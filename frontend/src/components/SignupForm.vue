@@ -47,51 +47,6 @@
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      fullname: '',
-      username: '',
-      email: '',
-      password: '',
-      terms: false,
-      message: ''
-    };
-  },
-  methods: {
-    async submitForm() {
-      this.message = '';  // Clear previous messages
-      try {
-        const response = await fetch('/api/signup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            fullname: this.fullname,
-            username: this.username,
-            email: this.email,
-            password: this.password
-          })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          this.message = 'Account created successfully!';
-          this.$router.push('/login'); // Redirect to login page
-        } else {
-          this.message = data.error || 'An error occurred. Please try again.';
-        }
-      } catch (error) {
-        this.message = 'An error occurred. Please try again.';
-      }
-    }
-  }
-};
-</script>
-
-<script>
 import axios from 'axios';
 
 export default {
@@ -107,6 +62,7 @@ export default {
   },
   methods: {
     async submitForm() {
+      this.message = '';  // Clear previous messages
       if (!this.terms) {
         this.message = 'You must agree to the terms of service';
         return;
@@ -118,9 +74,14 @@ export default {
           email: this.email,
           password: this.password
         });
-        this.message = response.data.message;
+        if (response.data.message) {
+          this.message = response.data.message;
+          this.$router.push('/login'); // Redirect to login page
+        } else {
+          this.message = response.data.error || 'An error occurred. Please try again.';
+        }
       } catch (error) {
-        this.message = error.response ? error.response.data.error : 'An error occurred';
+        this.message = error.response ? error.response.data.error : 'An error occurred. Please try again.';
       }
     }
   }
