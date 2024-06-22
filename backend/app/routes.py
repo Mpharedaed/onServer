@@ -1,11 +1,21 @@
 from flask import Blueprint, request, jsonify, url_for, current_app
 from flask_mail import Message
-from .models import User
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from .models import User, Post
 import jwt
+from flask_limiter.util import get_remote_address
 from datetime import datetime, timedelta
 
+
+
+
+# Initialize Flask Blueprint
 auth_bp = Blueprint('auth', __name__)
 
+# Import limiter from the main application file
+from run import limiter
+
+# Authentication routes
 @auth_bp.route('/signup', methods=['POST'])
 def signup():
     current_app.logger.info('Signup endpoint called.')
@@ -108,8 +118,9 @@ def login():
 
     token = jwt.encode({
         'user_id': str(user.id),
+        'sub': str(user.id),  # Add the subject claim
         'exp': datetime.utcnow() + timedelta(hours=1)
-    }, current_app.config['SECRET_KEY'], algorithm="HS256")
+    }, current_app.config['JWT_SECRET_KEY'], algorithm="HS256")
 
     current_app.logger.info('Login successful for user: %s', username)
     return jsonify({'token': token}), 200

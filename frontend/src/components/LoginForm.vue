@@ -21,6 +21,9 @@
           <button type="submit" class="login-button">Login</button>
         </form>
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+        <p v-if="errorMessage === 'Email not verified. Please check your email to verify your account.'">
+          Didn't receive an email? <button @click="resendVerificationEmail">Resend Verification Email</button>
+        </p>
         <p class="signup-text">Don't have an account? <router-link to="/signup">Sign Up</router-link></p>
       </div>
     </div>
@@ -57,10 +60,26 @@ export default {
       } catch (error) {
         this.errorMessage = error.response ? error.response.data.error : 'An error occurred. Please try again.';
       }
+    },
+    async resendVerificationEmail() {
+      try {
+        const response = await axios.post('http://127.0.0.1:5000/api/resend-verification', {
+          email: this.username
+        });
+        alert(response.data.message);
+      } catch (error) {
+        if (error.response && error.response.status === 429) {
+          alert('You have exceeded the number of allowed requests. Please try again later.');
+        } else {
+          alert(error.response ? error.response.data.error : 'An error occurred. Please try again.');
+        }
+      }
     }
   }
 };
 </script>
+
+
 
 <style scoped>
 /* Add your styles here */
@@ -251,4 +270,27 @@ export default {
     transform: translateY(0);
   }
 }
+
+@media (max-width: 730px) {
+  .form-group input[data-v-943f3ba8] {
+    width: 90%;
+    margin: 0 auto; /* Center the input field */
+  }
+  
+  .form-group input[data-v-8dac4566] {
+    width: 90%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;}
+  
+    .login-button[data-v-8dac4566] {
+    width: 90%;
+    padding: 12px;
+    background-color: #6c63ff;
+    color: white;
+    }
+  }
+    
 </style>

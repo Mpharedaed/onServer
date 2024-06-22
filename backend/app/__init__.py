@@ -2,41 +2,62 @@ from flask import Flask
 from flask_pymongo import PyMongo
 from flask_mail import Mail
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 import os
 
 # Load environment variables from .env file
 load_dotenv()
 
-# Initialize Flask app
-app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}})  # Enable CORS for the /api/* endpoints
+def create_app():
+    app = Flask(__name__)
 
-# Load configurations
-app.config['MONGO_URI'] = os.getenv('MONGO_URI')
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
-app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
+    # Load configurations from environment variables
+    app.config['MONGO_URI'] = os.getenv('MONGO_URI')
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+    app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+    app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
+    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+    app.config['MAIL_PORT'] = 587
+    app.config['MAIL_USE_TLS'] = True
+    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
+    app.config['JWT_TOKEN_LOCATION'] = ['headers']
+    app.config['UPLOAD_FOLDER'] = 'uploads'
 
-# Initialize extensions
-mongo = PyMongo(app)
-mail = Mail(app)
+    # Ensure the upload directory exists
+    ensure_upload_dir(app.config['UPLOAD_FOLDER'])
 
-# Make mongo and mail accessible through the app
-app.mongo = mongo
-app.mail = mail
+    # Enable CORS for all routes
+    CORS(app, resources={r"/api/*": {"origins": "http://localhost:8081"}})
 
-# Blueprint registration
-from .routes import auth_bp as auth_blueprint
-app.register_blueprint(auth_blueprint, url_prefix='/api')
+    # Initialize extensions
+    mongo = PyMongo(app)
+    mail = Mail(app)
+    jwt = JWTManager(app)
 
-@app.route('/')
-def index():
-    return "Hello, World!"
+    # Make mongo and mail accessible through the app instance
+    app.mongo = mongo
+    app.mail = mail
 
-if __name__ == "__main__":
-    app.run(debug=True)
+    # Blueprint registration
+    from .routes import auth_bp
+    from .posts import posts_bp  # Import the posts blueprint
+
+    app.register_blueprint(auth_bp, url_prefix='/api')
+    app.register_blueprint(posts_bp, url_prefix='/api')  # Register the posts blueprint
+
+    @app.route('/')
+    def index():
+        return "Hello, World!"
+
+    return app
+
+def ensure_upload_dir(upload_folder):
+    """Ensure the upload directory exists"""
+    if not os.path.exists(upload_folder):
+        try:
+            os.makedirs(upload_folder)
+            print(f'Upload directory created at {upload_folder}')
+        except Exception as e:
+            print(f'Failed to create upload directory {upload_folder}: {e}')

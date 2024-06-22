@@ -1,47 +1,43 @@
-from werkzeug.security import generate_password_hash, check_password_hash
-from bson.objectid import ObjectId
-from flask import current_app
+import os
+import sys
 
-class User:
-    def __init__(self, username, email, password=None, password_hash=None, _id=None):
-        self.username = username
-        self.email = email
-        self.password_hash = password_hash
-        if password:
-            self.set_password(password)
-        if _id:
-            self.id = _id
-        else:
-            self.id = ObjectId()
+# Ensure the 'backend/app' directory is in the sys.path
+sys.path.append(os.path.join(os.path.dirname(__file__), 'app'))
 
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+from flask import Flask, current_app
+from flask_pymongo import PyMongo
+from models import Post
+from dotenv import load_dotenv
 
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+# Load environment variables from .env file
+load_dotenv()
 
-    @staticmethod
-    def get_user_by_username(username):
-        user_data = current_app.mongo.db.users.find_one({'username': username})
-        if user_data:
-            return User(**user_data)
-        return None
+app = Flask(__name__)
+app.config['MONGO_URI'] = os.getenv('MONGO_URI')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
-    @staticmethod
-    def get_user_by_email(email):
-        user_data = current_app.mongo.db.users.find_one({'email': email})
-        if user_data:
-            return User(**user_data)
-        return None
+mongo = PyMongo(app)
 
-    def save_to_db(self):
-        user_dict = self.__dict__.copy()
-        user_dict.pop('id', None)  # Remove 'id' key to avoid duplication in MongoDB
-        current_app.mongo.db.users.insert_one(user_dict)
+with app.app_context():
+    app.mongo = mongo
 
-    @staticmethod
-    def find_by_id(user_id):
-        user_data = current_app.mongo.db.users.find_one({'_id': ObjectId(user_id)})
-        if user_data:
-            return User(**user_data)
-        return None
+    # Create a test post
+    test_post = Post(
+        user_id="test_user_id",
+        content="This is a test post",
+        tags=["test", "post"],
+        image_url="http://example.com/image.png"
+    )
+
+    # Save the post to the database
+    success = test_post.save_to_db()
+
+    if success:
+        print("Test post saved successfully")
+    else:
+        print("Failed to save test post")
+
+    # Retrieve and print all posts to verify insertion
+    posts = Post.get_all_posts()
+    for post in posts:
+        print(post.__dict__)

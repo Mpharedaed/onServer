@@ -3,20 +3,20 @@
     <div class="signup-container">
       <div class="image-section">
         <div class="overlay">
-          <h2>Welcome to signup form</h2>
-          <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+          <h2>Welcome to Signup Form</h2>
+          <p>Join our community and start your journey today.</p>
         </div>
       </div>
       <div class="form-section">
-        <h1>Sign Up #06</h1>
+        <h1>Sign Up</h1>
         <h3>Signup with these services</h3>
         <div class="social-buttons">
-          <button class="google"><i class="fab fa-google"></i></button>
-          <button class="facebook"><i class="fab fa-facebook-f"></i></button>
-          <button class="twitter"><i class="fab fa-twitter"></i></button>
+          <button class="google" @click="signUpWith('Google')"><i class="fab fa-google"></i></button>
+          <button class="facebook" @click="signUpWith('Facebook')"><i class="fab fa-facebook-f"></i></button>
+          <button class="twitter" @click="signUpWith('Twitter')"><i class="fab fa-twitter"></i></button>
         </div>
         <div class="divider">or</div>
-        <form @submit.prevent="submitForm">
+        <form @submit.prevent="submitForm" aria-live="polite">
           <div class="form-group">
             <label for="fullname">Full Name</label>
             <input type="text" id="fullname" v-model="fullname" required>
@@ -35,11 +35,11 @@
           </div>
           <div class="form-group checkbox">
             <input type="checkbox" id="terms" v-model="terms" required>
-            <label for="terms">I Agree All Statements In Terms Of Service</label>
+            <label for="terms">I Agree to All Terms and Conditions</label>
           </div>
-          <button type="submit" class="create-account">Create an account</button>
+          <button type="submit" class="create-account">Create an Account</button>
         </form>
-        <p class="signin-text">I'm already a member! <router-link to="/login">Sign In</router-link></p>
+        <p class="signin-text">Already a member? <router-link to="/login">Sign In</router-link></p>
         <div v-if="message" class="message">{{ message }}</div>
       </div>
     </div>
@@ -62,7 +62,7 @@ export default {
   },
   methods: {
     async submitForm() {
-      this.message = '';  // Clear previous messages
+      this.message = ''; // Clear previous messages
       if (!this.terms) {
         this.message = 'You must agree to the terms of service';
         return;
@@ -74,15 +74,20 @@ export default {
           email: this.email,
           password: this.password
         });
-        if (response.data.message) {
-          this.message = response.data.message;
-          this.$router.push('/login'); // Redirect to login page
+        if (response.data.success) {
+          this.message = 'Signup successful! Redirecting to login page...';
+          setTimeout(() => {
+            this.$router.push('/login');
+          }, 2000);
         } else {
           this.message = response.data.error || 'An error occurred. Please try again.';
         }
       } catch (error) {
         this.message = error.response ? error.response.data.error : 'An error occurred. Please try again.';
       }
+    },
+    signUpWith(service) {
+      this.message = `Signup with ${service} is not yet implemented.`;
     }
   }
 };
@@ -324,25 +329,59 @@ export default {
   }
 }
 
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
+@media (max-width: 480px) {
+  .form-group input {
+    font-size: 14px;
+    padding: 10px;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+  .create-account {
+    font-size: 14px;
+    padding: 10px;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .overlay h2 {
+    font-size: 18px;
+  }
+
+  .overlay p {
+    font-size: 12px;
+  }
+
+  .form-section h1 {
+    font-size: 20px;
+  }
+
+  .form-section h3 {
+    font-size: 16px;
+  }
+
+  .social-buttons button {
+    font-size: 20px;
+    margin: 0 5px;
+  }
+
+  .divider {
+    margin: 10px 0;
+  }
+
+  .divider::before, .divider::after {
+    width: 40%;
+  }
+
+  .signup-container {
+    padding: 10px;
+  }
+
+  .form-section {
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .form-group {
+    padding: 0 10px;
+    box-sizing: border-box;
   }
 }
 </style>
