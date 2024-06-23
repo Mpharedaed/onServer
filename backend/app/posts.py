@@ -35,8 +35,6 @@ def create_post():
         return jsonify({'error': 'An error occurred creating the post'}), 500
 
 
-
-
 @posts_bp.route('/user/posts', methods=['GET'])
 @jwt_required()
 def get_user_posts():
