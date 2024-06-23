@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <div class="post-container">
     <h2 class="post-title">My Posts</h2>
     <ul class="post-list">
@@ -23,6 +24,25 @@
       </li>
     </ul>
     <p v-if="posts.length === 0" class="no-posts">You have no posts.</p>
+=======
+  <div class="user-profile">
+    <h2 v-if="user">{{ user.username }}'s Profile</h2>
+    <div v-if="error">
+      <p class="error">{{ error }}</p>
+    </div>
+    <div v-else-if="posts.length">
+      <h3>Your Posts</h3>
+      <ul>
+        <li v-for="post in posts" :key="post.id">
+          <h4>{{ post.content }}</h4>
+          <p>{{ post.created_at }}</p>
+        </li>
+      </ul>
+    </div>
+    <div v-else>
+      <p>You have no posts.</p>
+    </div>
+>>>>>>> 3dc7672530d1e5be219899818d8b5f38eb11f174
   </div>
 </template>
 
@@ -68,6 +88,22 @@ export default {
       return new Date(date).toLocaleDateString(undefined, options);
     },
   },
+<<<<<<< HEAD
+=======
+  created() {
+    if (this.isAuthenticated) {
+      this.user = this.$store.getters.getUser;
+      if (this.user) {
+        console.log('User data:', this.user);
+        this.fetchUserPosts();
+      } else {
+        this.error = 'User data not found.';
+      }
+    } else {
+      this.error = 'You need to be logged in to view this page.';
+    }
+  }
+>>>>>>> 3dc7672530d1e5be219899818d8b5f38eb11f174
 };
 </script>
 
