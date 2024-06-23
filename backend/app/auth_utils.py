@@ -1,3 +1,4 @@
+
 from flask import Blueprint, request, jsonify, current_app
 from .models import User
 import jwt

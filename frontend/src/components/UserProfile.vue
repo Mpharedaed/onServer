@@ -1,6 +1,6 @@
 <template>
   <div class="user-profile">
-    <h2 v-if="user">{{ user.name }}'s Profile</h2>
+    <h2 v-if="user">{{ user.username }}'s Profile</h2>
     <div v-if="error">
       <p class="error">{{ error }}</p>
     </div>
@@ -53,7 +53,7 @@ export default {
   },
   created() {
     if (this.isAuthenticated) {
-      this.user = this.$store.state.auth.user;
+      this.user = this.$store.getters.getUser;
       if (this.user) {
         console.log('User data:', this.user);
         this.fetchUserPosts();
