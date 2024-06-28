@@ -1,5 +1,13 @@
 module.exports = {
   devServer: {
-    proxy: 'http://localhost:5000'  // Address of your Flask backend
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:5000',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    }
   }
 }

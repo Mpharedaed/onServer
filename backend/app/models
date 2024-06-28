@@ -104,7 +104,7 @@ class User:
             current_app.logger.error('Token verification error: Invalid token')
             return None
 class Post:
-    def __init__(self, user_id, content, likes=0, comments=None, created_at=None, updated_at=None, tags=None, image_url=None, is_pinned=False, _id=None):
+    def __init__(self, user_id, content, likes=0, comments=None, created_at=None, updated_at=None, tags=None, image_url=None, is_pinned=False, is_anonymous=False, _id=None):
         self.user_id = user_id
         self.content = content
         self.likes = likes
@@ -114,6 +114,7 @@ class Post:
         self.tags = tags if tags is not None else []
         self.image_url = image_url
         self.is_pinned = is_pinned
+        self.is_anonymous = is_anonymous  # Add this line
         if _id:
             self.id = _id
         else:
@@ -131,7 +132,8 @@ class Post:
                 'updated_at': self.updated_at,
                 'tags': self.tags,
                 'image_url': self.image_url,
-                'is_pinned': self.is_pinned
+                'is_pinned': self.is_pinned,
+                'is_anonymous': self.is_anonymous  # Add this line
             }
             current_app.mongo.db.posts.replace_one({'_id': self.id}, post_data, upsert=True)
             return True
@@ -200,5 +202,6 @@ class Post:
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'tags': self.tags,
             'image_url': self.image_url,
-            'is_pinned': self.is_pinned
+            'is_pinned': self.is_pinned,
+            'is_anonymous': self.is_anonymous  # Add this line
         }

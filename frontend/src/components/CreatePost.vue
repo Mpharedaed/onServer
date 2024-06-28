@@ -20,12 +20,23 @@
           Pin this post
         </label>
       </div>
+      <div class="form-group toggle-group">
+        <label for="is_anonymous">Post Anonymously</label>
+        <label class="lock-toggle">
+          <input type="checkbox" id="is_anonymous" v-model="postData.is_anonymous"/>
+          <span class="slider round">
+            <span class="lock">
+              <span class="lock-body"></span>
+              <span class="lock-shackle"></span>
+            </span>
+          </span>
+        </label>
+      </div>
       <button type="submit">Create Post</button>
     </form>
     <div v-if="message" class="message">{{ message }}</div>
   </div>
 </template>
-
 <script>
 import axios from 'axios';
 
@@ -37,6 +48,7 @@ export default {
         tags: '',
         image_url: '',
         is_pinned: false,
+        is_anonymous: false, // New property for anonymous post
       },
       message: '',
     };
@@ -50,7 +62,8 @@ export default {
           content: this.postData.content,
           tags: this.postData.tags.split(',').map(tag => tag.trim()), // Convert tags to an array
           image_url: this.postData.image_url,
-          is_pinned: this.postData.is_pinned
+          is_pinned: this.postData.is_pinned,
+          is_anonymous: this.postData.is_anonymous // Include anonymous option in payload
         };
         console.log('Payload:', JSON.stringify(payload, null, 2)); // Log the payload
         const response = await axios.post('http://127.0.0.1:5000/api/posts', payload, {
@@ -67,6 +80,7 @@ export default {
           tags: '',
           image_url: '',
           is_pinned: false,
+          is_anonymous: false,
         };
       } catch (error) {
         console.error('Error:', error); // Log the error
@@ -80,6 +94,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
@@ -218,4 +233,120 @@ h2 {
 .form-group label {
   font-size: 1rem;
 }
+.create-post {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f0f2f5;
+  border-radius: 10px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lock-toggle {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.lock-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.lock {
+  position: relative;
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.4s;
+  top: 4px;
+}
+
+.lock-body {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background-color: white;
+  border-radius: 3px;
+  top: 6px;
+  left: 6px;
+  transition: 0.4s;
+}
+
+.lock-shackle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 3px solid white;
+  border-bottom: none;
+  border-radius: 50%;
+  top: -8px;
+  left: 8px;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+input:checked + .slider .lock {
+  background-color: #2196F3;
+  transform: translateX(26px);
+}
+
+input:checked + .slider .lock .lock-body {
+  background-color: #2196F3;
+}
+
+input:checked + .slider .lock .lock-shackle {
+  border-color: #2196F3;
+}
+
+
 </style>

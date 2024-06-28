@@ -1,7 +1,9 @@
+# routes/posts.py
 from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from .models import Post
+from model.post import Post  # Corrected import path
 
+# Define the Blueprint
 posts_bp = Blueprint('posts', __name__)
 
 @posts_bp.route('/posts', methods=['POST'])
@@ -13,27 +15,31 @@ def create_post():
     current_app.logger.debug('Received data: %s', data)
 
     content = data.get('content')
+    is_anonymous = data.get('is_anonymous', False)
+
     if not content:
         current_app.logger.error('Content is required')
         return jsonify({'error': 'Content is required'}), 400
 
     try:
         new_post = Post(
-            user_id=user_id,
+            user_id=user_id if not is_anonymous else None,
             content=content,
             likes=data.get('likes', 0),
             comments=data.get('comments', []),
             tags=data.get('tags', []),
             image_url=data.get('image_url'),
-            is_pinned=data.get('is_pinned', False)
+            is_pinned=data.get('is_pinned', False),
+            is_anonymous=is_anonymous
         )
-        new_post.save_to_db()
-        current_app.logger.info('New post created with id: %s', new_post.id)
-        return jsonify({'message': 'Post created successfully', 'post_id': str(new_post.id)}), 201
+        if new_post.save_to_db():
+            current_app.logger.info('New post created with id: %s', new_post.id)
+            return jsonify({'message': 'Post created successfully', 'post_id': str(new_post.id)}), 201
+        else:
+            return jsonify({'error': 'An error occurred creating the post'}), 500
     except Exception as e:
         current_app.logger.error('Error creating post: %s', str(e))
         return jsonify({'error': 'An error occurred creating the post'}), 500
-
 
 @posts_bp.route('/user/posts', methods=['GET'])
 @jwt_required()

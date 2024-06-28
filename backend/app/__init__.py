@@ -1,7 +1,8 @@
+# app/__init__.py
 from flask import Flask
+from flask_cors import CORS
 from flask_pymongo import PyMongo
 from flask_mail import Mail
-from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 import os
@@ -29,7 +30,7 @@ def create_app():
     ensure_upload_dir(app.config['UPLOAD_FOLDER'])
 
     # Enable CORS for all routes
-    CORS(app, resources={r"/api/*": {"origins": "http://localhost:8081"}})
+    CORS(app, resources={r"/api/*": {"origins": "http://localhost:8087"}})
 
     # Initialize extensions
     mongo = PyMongo(app)
@@ -41,11 +42,8 @@ def create_app():
     app.mail = mail
 
     # Blueprint registration
-    from .routes import auth_bp
-    from .posts import posts_bp  # Import the posts blueprint
-
-    app.register_blueprint(auth_bp, url_prefix='/api')
-    app.register_blueprint(posts_bp, url_prefix='/api')  # Register the posts blueprint
+    from routes import register_blueprints
+    register_blueprints(app)
 
     @app.route('/')
     def index():
