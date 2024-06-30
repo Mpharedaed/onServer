@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axiosInstance from '@/plugins/axios';  // Import the configured Axios instance
 
 export default {
   data() {
@@ -45,8 +45,8 @@ export default {
     async submitForm() {
       this.errorMessage = '';  // Clear any previous error messages
       try {
-        const response = await axios.post('http://127.0.0.1:5000/api/login', {
-          username: this.username,
+        const response = await axiosInstance.post('/login', {
+          email: this.username,  // Assuming the backend expects email, change if needed
           password: this.password
         });
 
@@ -55,36 +55,35 @@ export default {
           this.$store.dispatch('login', response.data.token);
           this.$router.push('/dashboard');
         } else {
-          this.errorMessage = response.data.error || 'An error occurred. Please try again.';
+          this.errorMessage = response.data.message || 'An error occurred. Please try again.';
         }
       } catch (error) {
-        this.errorMessage = error.response ? error.response.data.error : 'An error occurred. Please try again.';
+        if (error.response && error.response.status === 401 && error.response.data.message === "Email not confirmed") {
+          this.errorMessage = 'Email not verified. Please check your email to verify your account.';
+        } else if (error.response && error.response.status === 404) {
+          this.errorMessage = 'User not found. Please register first.';
+        } else {
+          this.errorMessage = error.response ? error.response.data.message : 'An error occurred. Please try again.';
+        }
       }
     },
     async resendVerificationEmail() {
       try {
-        const response = await axios.post('http://127.0.0.1:5000/api/resend-verification', {
-          email: this.username
+        const response = await axiosInstance.post('/resend-verification', {
+          email: this.username  // Assuming the username field contains the email
         });
         alert(response.data.message);
       } catch (error) {
         if (error.response && error.response.status === 429) {
           alert('You have exceeded the number of allowed requests. Please try again later.');
         } else {
-          alert(error.response ? error.response.data.error : 'An error occurred. Please try again.');
+          alert(error.response ? error.response.data.message : 'An error occurred. Please try again.');
         }
       }
     }
   }
 };
 </script>
-
-
-
-<style scoped>
-/* Add your styles here */
-</style>
-
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');

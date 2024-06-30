@@ -9,35 +9,42 @@
       </div>
       <div class="form-section">
         <h1>Sign Up</h1>
-        <h3>Signup with these services</h3>
-        <div class="social-buttons">
-          <button class="google" @click="signUpWith('Google')"><i class="fab fa-google"></i></button>
-          <button class="facebook" @click="signUpWith('Facebook')"><i class="fab fa-facebook-f"></i></button>
-          <button class="twitter" @click="signUpWith('Twitter')"><i class="fab fa-twitter"></i></button>
-        </div>
-        <div class="divider">or</div>
         <form @submit.prevent="submitForm" aria-live="polite">
-          <div class="form-group">
-            <label for="fullname">Full Name</label>
-            <input type="text" id="fullname" v-model="fullname" required>
+          <!-- Step 1 -->
+          <div v-if="step === 1">
+            <div class="form-group">
+              <label for="fullname">Full Name</label>
+              <input type="text" id="fullname" v-model="fullname" required>
+            </div>
+            <button type="button" class="next-button" @click="nextStep">Next</button>
           </div>
-          <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" v-model="username" required>
+          <!-- Step 2 -->
+          <div v-if="step === 2">
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input type="text" id="username" v-model="username" required>
+            </div>
+            <button type="button" class="prev-button" @click="prevStep">Back</button>
+            <button type="button" class="next-button" @click="nextStep">Next</button>
           </div>
-          <div class="form-group">
-            <label for="email">Email Address</label>
-            <input type="email" id="email" v-model="email" required>
+          <!-- Step 3 -->
+          <div v-if="step === 3">
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" v-model="email" required>
+            </div>
+            <button type="button" class="prev-button" @click="prevStep">Back</button>
+            <button type="button" class="next-button" @click="nextStep">Next</button>
           </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" v-model="password" required>
+          <!-- Step 4 -->
+          <div v-if="step === 4">
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" v-model="password" required>
+            </div>
+            <button type="button" class="prev-button" @click="prevStep">Back</button>
+            <button type="submit" class="create-account">Create an Account</button>
           </div>
-          <div class="form-group checkbox">
-            <input type="checkbox" id="terms" v-model="terms" required>
-            <label for="terms">I Agree to All Terms and Conditions</label>
-          </div>
-          <button type="submit" class="create-account">Create an Account</button>
         </form>
         <p class="signin-text">Already a member? <router-link to="/login">Sign In</router-link></p>
         <div v-if="message" class="message">{{ message }}</div>
@@ -47,28 +54,34 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axiosInstance from '@/plugins/axios';
 
 export default {
   data() {
     return {
+      step: 1,
       fullname: '',
       username: '',
       email: '',
       password: '',
-      terms: false,
       message: ''
     };
   },
   methods: {
+    nextStep() {
+      if (this.step < 4) {
+        this.step++;
+      }
+    },
+    prevStep() {
+      if (this.step > 1) {
+        this.step--;
+      }
+    },
     async submitForm() {
       this.message = ''; // Clear previous messages
-      if (!this.terms) {
-        this.message = 'You must agree to the terms of service';
-        return;
-      }
       try {
-        const response = await axios.post('http://127.0.0.1:5000/api/signup', {
+        const response = await axiosInstance.post('/signup', {
           fullname: this.fullname,
           username: this.username,
           email: this.email,
@@ -77,7 +90,9 @@ export default {
         if (response.data.success) {
           this.message = 'Signup successful! Redirecting to login page...';
           setTimeout(() => {
-            this.$router.push('/login');
+            if (this.$route.path !== '/login') {
+              this.$router.push('/login');
+            }
           }, 2000);
         } else {
           this.message = response.data.error || 'An error occurred. Please try again.';
@@ -85,9 +100,6 @@ export default {
       } catch (error) {
         this.message = error.response ? error.response.data.error : 'An error occurred. Please try again.';
       }
-    },
-    signUpWith(service) {
-      this.message = `Signup with ${service} is not yet implemented.`;
     }
   }
 };
@@ -168,69 +180,6 @@ export default {
   animation: fadeInDown 1s;
 }
 
-.form-section h3 {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 18px;
-  animation: fadeInUp 1s;
-}
-
-.social-buttons {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.social-buttons button {
-  background: none;
-  border: none;
-  font-size: 24px;
-  margin: 0 10px;
-  cursor: pointer;
-  transition: color 0.3s, transform 0.3s;
-}
-
-.social-buttons button:hover {
-  color: #555;
-  transform: scale(1.1);
-}
-
-.social-buttons .google {
-  color: #db4437;
-}
-
-.social-buttons .facebook {
-  color: #4267b2;
-}
-
-.social-buttons .twitter {
-  color: #1da1f2;
-}
-
-.divider {
-  text-align: center;
-  margin: 20px 0;
-  color: #bbb;
-  position: relative;
-}
-
-.divider::before, .divider::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  width: 45%;
-  height: 1px;
-  background: #ddd;
-}
-
-.divider::before {
-  left: 0;
-}
-
-.divider::after {
-  right: 0;
-}
-
 .form-group {
   margin-bottom: 20px;
 }
@@ -251,12 +200,28 @@ export default {
   font-size: 16px;
 }
 
-.checkbox {
-  display: flex;
-  align-items: center;
+.form-group input:focus {
+  border-color: #6c63ff;
 }
 
-.checkbox input {
+.next-button, .prev-button {
+  padding: 12px 20px;
+  margin-top: 20px;
+  background-color: #6c63ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.next-button:hover, .prev-button:hover {
+  background-color: #594acf;
+  transform: scale(1.05);
+}
+
+.prev-button {
   margin-right: 10px;
 }
 
@@ -350,10 +315,6 @@ export default {
 
   .form-section h1 {
     font-size: 20px;
-  }
-
-  .form-section h3 {
-    font-size: 16px;
   }
 
   .social-buttons button {

@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from model.friendship import AnonymousFriendship  # Updated import path
+from model.friendship import AnonymousFriendship
+from model.user import User  # Ensure User is imported
 
 friendship_bp = Blueprint('friendship', __name__)
 
@@ -151,3 +152,13 @@ def reveal_identity():
     friendship.reveal_identity()
 
     return jsonify({'message': 'Identity revealed'}), 200
+
+@friendship_bp.route('/potential_friends', methods=['GET'])
+@jwt_required()
+def get_potential_friends():
+    current_user_id = get_jwt_identity()
+    potential_friends = User.get_potential_friends(current_user_id)
+    
+    potential_friends_list = [{'id': str(user['_id']), 'name': user['username'], 'avatar': user.get('avatar', 'default-avatar.png')} for user in potential_friends]
+
+    return jsonify({'potential_friends': potential_friends_list}), 200

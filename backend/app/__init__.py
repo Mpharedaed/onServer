@@ -1,4 +1,3 @@
-# app/__init__.py
 from flask import Flask
 from flask_cors import CORS
 from flask_pymongo import PyMongo
@@ -30,7 +29,7 @@ def create_app():
     ensure_upload_dir(app.config['UPLOAD_FOLDER'])
 
     # Enable CORS for all routes
-    CORS(app, resources={r"/api/*": {"origins": "http://localhost:8087"}})
+    CORS(app, resources={r"/api/*": {"origins": "http://localhost:8081"}})
 
     # Initialize extensions
     mongo = PyMongo(app)
@@ -42,13 +41,13 @@ def create_app():
     app.mail = mail
 
     # Blueprint registration
-    from routes import register_blueprints
-    register_blueprints(app)
+    from routes.auth import auth_bp
+    app.register_blueprint(auth_bp, url_prefix='/api')
 
     @app.route('/')
     def index():
         return "Hello, World!"
-
+    
     return app
 
 def ensure_upload_dir(upload_folder):

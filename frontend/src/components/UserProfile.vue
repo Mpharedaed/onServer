@@ -2,9 +2,9 @@
   <div class="profile-container">
     <!-- User Info Section -->
     <div class="user-info-container">
-      <img :src="user.avatar || 'default-avatar.png'" alt="User Avatar" class="avatar-large">
+      <img :src="avatarUrl" alt="User Avatar" class="avatar-large">
       <div class="user-details">
-        <h1 class="username">{{ user.name || 'Anonymous' }}</h1>
+        <h1 class="username">{{ user.username || 'Anonymous' }}</h1>
         <p class="user-bio">{{ user.bio || 'No bio available' }}</p>
       </div>
     </div>
@@ -13,6 +13,7 @@
     <div class="profile-nav">
       <button @click="activeTab = 'posts'" :class="{ active: activeTab === 'posts' }">Posts</button>
       <button @click="activeTab = 'friends'" :class="{ active: activeTab === 'friends' }">Friends</button>
+      <button @click="activeTab = 'potentialFriends'" :class="{ active: activeTab === 'potentialFriends' }">Potential Friends</button>
       <button @click="activeTab = 'settings'" :class="{ active: activeTab === 'settings' }">Settings</button>
     </div>
 
@@ -24,7 +25,7 @@
           <div class="post-header" v-if="post.user">
             <img :src="post.user.avatar || 'default-avatar.png'" alt="User Avatar" class="avatar">
             <div class="user-info">
-              <h3 class="username">{{ post.user.name || 'Anonymous' }}</h3>
+              <h3 class="username">{{ post.user.username || 'Anonymous' }}</h3>
               <p class="post-date">{{ formatDate(post.date) }}</p>
             </div>
           </div>
@@ -50,11 +51,26 @@
         <li v-for="friend in friends" :key="friend.id" class="friend-item">
           <img :src="friend.avatar || 'default-avatar.png'" alt="Friend Avatar" class="avatar-small">
           <div class="friend-info">
-            <h3 class="friend-name">{{ friend.name }}</h3>
+            <h3 class="friend-name">{{ friend.username }}</h3>
           </div>
         </li>
       </ul>
       <p v-if="friends.length === 0" class="no-friends">You have no friends.</p>
+    </div>
+
+    <!-- Potential Friends Section -->
+    <div v-if="activeTab === 'potentialFriends'" class="potential-friends-container">
+      <h2 class="section-title">Potential Friends</h2>
+      <ul class="potential-friends-list">
+        <li v-for="friend in potentialFriends" :key="friend.id" class="friend-item">
+          <img :src="friend.avatar || 'default-avatar.png'" alt="Friend Avatar" class="avatar-small">
+          <div class="friend-info">
+            <h3 class="friend-name">{{ friend.username }}</h3>
+            <button @click="sendFriendRequest(friend.id)" class="add-friend-button">Add Friend</button>
+          </div>
+        </li>
+      </ul>
+      <p v-if="potentialFriends.length === 0" class="no-friends">No potential friends found.</p>
     </div>
 
     <!-- Settings Section -->
@@ -62,10 +78,13 @@
       <h2 class="section-title">Settings</h2>
       <form @submit.prevent="updateSettings">
         <label for="username">Username</label>
-        <input type="text" id="username" v-model="user.name">
+        <input type="text" id="username" v-model="user.username">
 
         <label for="bio">Bio</label>
         <textarea id="bio" v-model="user.bio"></textarea>
+
+        <label for="avatar">Profile Photo</label>
+        <input type="file" id="avatar" @change="onFileChange">
 
         <button type="submit" class="save-button">Save Changes</button>
       </form>
@@ -80,73 +99,122 @@
 import axios from 'axios';
 
 export default {
+  name: 'UserProfile',
   data() {
     return {
+      user: { username: '', bio: '', avatar: '' },
       posts: [],
-      friends: [
-        { id: 1, name: 'John Doe', avatar: 'default-avatar.png' },
-        { id: 2, name: 'Jane Smith', avatar: 'default-avatar.png' }
-      ], // Mock data for friends
-      user: { name: 'User Name', bio: 'This is a bio', avatar: 'default-avatar.png' }, // Mock user data
+      friends: [],
+      potentialFriends: [],
+      selectedFile: null,
       error: null,
+      loading: true,
       activeTab: 'posts',
     };
   },
-  created() {
-    this.fetchPosts();
-    // Mock authentication for demonstration purposes
-    if (this.isAuthenticated) {
-      this.user = this.$store.getters.getUser || this.user;
-      this.fetchUserPosts();
-    } else {
-      this.error = 'You need to be logged in to view this page.';
+  computed: {
+    avatarUrl() {
+      return this.user.avatar ? `http://127.0.0.1:5000/uploads/${this.user.avatar}` : 'default-avatar.png';
     }
   },
+  created() {
+    this.fetchUser();
+    this.fetchFriends();
+    this.fetchPotentialFriends();
+  },
   methods: {
-    async fetchPosts() {
+    async fetchUser() {
       try {
-        const response = await axios.get('http://127.0.0.1:5000/api/user/posts', {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://127.0.0.1:5000/api/profile', {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${token}`,
           },
         });
+        this.user = response.data;
         this.posts = response.data.posts;
       } catch (error) {
-        console.error('Error fetching posts:', error);
+        console.error('Error fetching user:', error);
+        this.error = 'Failed to fetch user.';
       }
     },
-    async likePost(post) {
+    async fetchFriends() {
       try {
-        await axios.post(`http://127.0.0.1:5000/api/user/posts/${post.id}/like`, {}, {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://127.0.0.1:5000/api/friends', {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${token}`,
           },
         });
-        post.likes += 1;
+        this.friends = response.data.friends;
       } catch (error) {
-        console.error('Error liking post:', error);
+        console.error('Error fetching friends:', error);
+        this.error = 'Failed to fetch friends.';
       }
     },
-    formatDate(date) {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      return new Date(date).toLocaleDateString(undefined, options);
+    async fetchPotentialFriends() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://127.0.0.1:5000/api/potential_friends', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        this.potentialFriends = response.data.potential_friends;
+      } catch (error) {
+        console.error('Error fetching potential friends:', error);
+        this.error = 'Failed to fetch potential friends.';
+      }
+    },
+    async sendFriendRequest(userId) {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.post(`http://127.0.0.1:5000/api/add`, { user2_id: userId }, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        alert('Friend request sent successfully!');
+        this.potentialFriends = this.potentialFriends.filter(user => user.id !== userId);
+      } catch (error) {
+        console.error('Error sending friend request:', error);
+        alert('Failed to send friend request.');
+      }
+    },
+    onFileChange(event) {
+      this.selectedFile = event.target.files[0];
     },
     async updateSettings() {
       try {
-        const response = await axios.put('http://127.0.0.1:5000/api/user/settings', this.user, {
+        const token = localStorage.getItem('token');
+        const formData = new FormData();
+        formData.append('username', this.user.username);
+        formData.append('bio', this.user.bio);
+        if (this.selectedFile) {
+          formData.append('avatar', this.selectedFile);
+        }
+
+        const response = await axios.put('http://127.0.0.1:5000/api/profile', formData, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
           },
         });
         this.user = response.data.user;
         alert('Settings updated successfully');
       } catch (error) {
         console.error('Error updating settings:', error);
+        this.error = 'Failed to update settings.';
       }
     },
-  },
+    formatDate(date) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(date).toLocaleDateString(undefined, options);
+    }
+  }
 };
 </script>
+
 
 <style scoped>
 .profile-container {
@@ -215,14 +283,14 @@ export default {
   text-align: center;
 }
 
-.posts-container, .friends-container, .settings-container {
+.posts-container, .friends-container, .potential-friends-container, .settings-container {
   background: #fff;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.post-list, .friends-list {
+.post-list, .friends-list, .potential-friends-list {
   list-style-type: none;
   padding: 0;
 }

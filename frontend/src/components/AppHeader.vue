@@ -2,7 +2,7 @@
   <header class="header" :class="{ scrolled: isScrolled }">
     <div class="container">
       <div class="logo">
-        <h1>My App</h1>
+        <h1>Trillow</h1>
       </div>
       <nav class="navigation" :class="{ open: menuOpen }">
         <ul>
