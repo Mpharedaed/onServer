@@ -10,11 +10,13 @@ from flask_cors import cross_origin
 auth_bp = Blueprint('auth', __name__)
 
 class User:
-    def __init__(self, username, email, password=None, password_hash=None, _id=None, verified=False):
+    def __init__(self, username, email, password=None, password_hash=None, _id=None, verified=False, last_verification_email_sent=None, last_password_reset_email_sent=None):
         self.username = username
         self.email = email
         self.password_hash = password_hash
         self.verified = verified
+        self.last_verification_email_sent = last_verification_email_sent
+        self.last_password_reset_email_sent = last_password_reset_email_sent
         if password:
             self.set_password(password)
         if _id:
@@ -47,7 +49,9 @@ class User:
                 email=user_data['email'],
                 password_hash=user_data['password_hash'],
                 _id=user_data['_id'],
-                verified=user_data.get('verified', False)
+                verified=user_data.get('verified', False),
+                last_verification_email_sent=user_data.get('last_verification_email_sent'),
+                last_password_reset_email_sent=user_data.get('last_password_reset_email_sent')
             )
         current_app.logger.debug('User not found by username: %s', username)
         return None
@@ -63,7 +67,9 @@ class User:
                 email=user_data['email'],
                 password_hash=user_data['password_hash'],
                 _id=user_data['_id'],
-                verified=user_data.get('verified', False)
+                verified=user_data.get('verified', False),
+                last_verification_email_sent=user_data.get('last_verification_email_sent'),
+                last_password_reset_email_sent=user_data.get('last_password_reset_email_sent')
             )
         current_app.logger.debug('User not found by email: %s', email)
         return None
@@ -74,7 +80,9 @@ class User:
             'username': self.username,
             'email': self.email,
             'password_hash': self.password_hash,
-            'verified': self.verified
+            'verified': self.verified,
+            'last_verification_email_sent': self.last_verification_email_sent,
+            'last_password_reset_email_sent': self.last_password_reset_email_sent
         }
         current_app.logger.debug('Saving user to DB: %s', user_data)
         current_app.mongo.db.users.replace_one({'_id': self.id}, user_data, upsert=True)
@@ -90,7 +98,9 @@ class User:
                 email=user_data['email'],
                 password_hash=user_data['password_hash'],
                 _id=user_data['_id'],
-                verified=user_data.get('verified', False)
+                verified=user_data.get('verified', False),
+                last_verification_email_sent=user_data.get('last_verification_email_sent'),
+                last_password_reset_email_sent=user_data.get('last_password_reset_email_sent')
             )
         current_app.logger.debug('User not found by ID: %s', user_id)
         return None
@@ -259,3 +269,57 @@ def _build_cors_prelight_response():
     response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
     response.headers.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
     return response
+
+
+@auth_bp.route('/reset-password-request', methods=['POST', 'OPTIONS'])
+@cross_origin()
+def reset_password_request():
+    if request.method == 'OPTIONS':
+        return _build_cors_prelight_response()
+    data = request.get_json()
+    email = data.get('email')
+    current_app.logger.debug('Password reset request for email: %s', email)
+    user = User.get_user_by_email(email)
+    if user:
+        now = datetime.utcnow()
+        if user.last_password_reset_email_sent and (now - user.last_password_reset_email_sent).total_seconds() < 3600:
+            current_app.logger.debug('Reset password request failed: Email recently sent')
+            return jsonify({"message": "Reset password email recently sent. Please wait before requesting again."}), 429
+        
+        token = user.generate_verification_token(expiration=3600)
+        reset_url = f'http://localhost:8081/reset-password/{token}'
+        msg = Message(
+            'Reset Your Password',
+            recipients=[email]
+        )
+        msg.body = f'Please click the following link to reset your password: {reset_url}'
+        try:
+            current_app.mail.send(msg)
+            user.last_password_reset_email_sent = now
+            user.save_to_db()
+            current_app.logger.debug('Reset password email sent to %s', email)
+            return jsonify({"message": "Reset password email sent"}), 200
+        except Exception as e:
+            current_app.logger.error('Failed to send reset password email: %s', e)
+            return jsonify({"message": "Failed to send reset password email"}), 500
+    current_app.logger.debug('Password reset request failed: User not found')
+    return jsonify({"message": "User not found"}), 404
+
+@auth_bp.route('/reset-password/<token>', methods=['POST', 'OPTIONS'])
+@cross_origin()
+def reset_password(token):
+    if request.method == 'OPTIONS':
+        return _build_cors_prelight_response()
+    data = request.get_json()
+    new_password = data.get('new_password')
+    current_app.logger.debug('Resetting password with token: %s', token)
+    email = User.verify_verification_token(token)
+    if email:
+        user = User.get_user_by_email(email)
+        if user:
+            user.set_password(new_password)
+            user.save_to_db()
+            current_app.logger.debug('Password reset successful for user: %s', email)
+            return jsonify({"message": "Password reset successfully"}), 200
+    current_app.logger.error('Password reset failed: Invalid or expired token')
+    return jsonify({"message": "Invalid or expired token"}), 400

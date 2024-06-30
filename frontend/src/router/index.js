@@ -1,3 +1,4 @@
+// src/router/index.js
 import Vue from 'vue';
 import Router from 'vue-router';
 import HomePage from '@/views/HomePage.vue';
@@ -8,7 +9,8 @@ import UserDashboard from '@/components/UserDashboard.vue';
 import CreatePost from '@/components/CreatePost.vue';
 import UserProfile from '@/components/UserProfile.vue';
 import PotentialFriends from '@/components/PotentialFriends.vue';
-import EmailVerify from '@/components/EmailVerify.vue';  // Import the renamed verification component
+import ResetPasswordRequest from '@/components/ResetPasswordRequest.vue';
+import ResetPassword from '@/components/ResetPassword.vue';
 import store from '@/store'; // Import the Vuex store
 
 Vue.use(Router);
@@ -22,7 +24,8 @@ const routes = [
   { path: '/create-post', name: 'CreatePost', component: CreatePost, meta: { requiresAuth: true } },
   { path: '/profile', name: 'UserProfile', component: UserProfile, meta: { requiresAuth: true } },
   { path: '/potential-friends', name: 'PotentialFriends', component: PotentialFriends, meta: { requiresAuth: true } },
-  { path: '/verify/:token', name: 'EmailVerify', component: EmailVerify }  // Update verification route
+  { path: '/reset-password-request', name: 'ResetPasswordRequest', component: ResetPasswordRequest },
+  { path: '/reset-password/:token', name: 'ResetPassword', component: ResetPassword },
 ];
 
 const router = new Router({

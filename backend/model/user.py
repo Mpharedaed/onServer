@@ -5,12 +5,13 @@ import jwt
 from datetime import datetime, timedelta
 
 class User:
-    def __init__(self, username, email, password=None, password_hash=None, _id=None, verified=False, last_verification_email_sent=None):
+    def __init__(self, username, email, password=None, password_hash=None, _id=None, verified=False, last_verification_email_sent=None, last_password_reset_email_sent=None):
         self.username = username
         self.email = email
         self.password_hash = password_hash
         self.verified = verified
         self.last_verification_email_sent = last_verification_email_sent
+        self.last_password_reset_email_sent = last_password_reset_email_sent
         if password:
             self.set_password(password)
         if _id:
@@ -29,8 +30,7 @@ class User:
             'id': str(self.id),
             'username': self.username,
             'email': self.email,
-            'verified': self.verified,
-            'last_verification_email_sent': self.last_verification_email_sent
+            'verified': self.verified
         }
 
     @staticmethod
@@ -74,7 +74,8 @@ class User:
             'email': self.email,
             'password_hash': self.password_hash,
             'verified': self.verified,
-            'last_verification_email_sent': self.last_verification_email_sent
+            'last_verification_email_sent': self.last_verification_email_sent,
+            'last_password_reset_email_sent': self.last_password_reset_email_sent
         }
         current_app.logger.debug('Saving user to DB: %s', user_data)
         current_app.mongo.db.users.replace_one({'_id': self.id}, user_data, upsert=True)

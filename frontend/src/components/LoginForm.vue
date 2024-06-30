@@ -21,6 +21,9 @@
           <button type="submit" class="login-button">Login</button>
         </form>
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+        <p v-if="resetPasswordLink" class="reset-link">
+          Forgot your password? <router-link :to="{ name: 'ResetPasswordRequest' }">Reset it here</router-link>
+        </p>
         <p v-if="errorMessage === 'Email not verified. Please check your email to verify your account.'">
           Didn't receive an email? <button @click="resendVerificationEmail">Resend Verification Email</button>
         </p>
@@ -29,7 +32,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import axiosInstance from '@/plugins/axios';  // Import the configured Axios instance
 
@@ -38,12 +40,14 @@ export default {
     return {
       username: '',
       password: '',
-      errorMessage: ''
+      errorMessage: '',
+      resetPasswordLink: false
     };
   },
   methods: {
     async submitForm() {
       this.errorMessage = '';  // Clear any previous error messages
+      this.resetPasswordLink = false; // Reset the link visibility
       try {
         const response = await axiosInstance.post('/login', {
           email: this.username,  // Assuming the backend expects email, change if needed
@@ -62,6 +66,9 @@ export default {
           this.errorMessage = 'Email not verified. Please check your email to verify your account.';
         } else if (error.response && error.response.status === 404) {
           this.errorMessage = 'User not found. Please register first.';
+        } else if (error.response && error.response.status === 401) {
+          this.errorMessage = error.response.data.message;
+          this.resetPasswordLink = true;
         } else {
           this.errorMessage = error.response ? error.response.data.message : 'An error occurred. Please try again.';
         }
