@@ -61,27 +61,29 @@ export default {
 };
 </script>
 
-
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
+/* General Header Styles */
 .header {
-  background: #ffffff;
-  color: #333333;
-  padding: 10px 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #6A0572, #A904B5);
+  color: #ffffff;
+  padding: 15px 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   position: fixed;
   width: 100%;
   z-index: 1000;
   top: 0;
-  transition: background 0.3s ease, padding 0.3s ease;
+  transition: background 0.4s ease, padding 0.4s ease, box-shadow 0.4s ease;
 }
 
 .header.scrolled {
-  background: #f7f7f7;
-  padding: 5px 20px;
+  background: linear-gradient(135deg, #4A0357, #8A029D);
+  padding: 10px 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
+/* Container and Logo */
 .container {
   display: flex;
   justify-content: space-between;
@@ -95,11 +97,14 @@ export default {
   font-family: 'Roboto', sans-serif;
   font-weight: 700;
   margin: 0;
-  font-size: 24px;
-  color: #333333;
-  animation: fadeInDown 1s ease;
+  font-size: 28px;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  animation: fadeInDown 0.8s ease-out;
 }
 
+/* Navigation Styles */
 .navigation {
   display: flex;
   align-items: center;
@@ -108,7 +113,7 @@ export default {
 .navigation ul {
   list-style: none;
   display: flex;
-  gap: 20px;
+  gap: 25px;
   margin: 0;
   padding: 0;
   font-family: 'Roboto', sans-serif;
@@ -120,19 +125,36 @@ export default {
 }
 
 .navigation a {
-  color: #333333;
+  color: #ffffff;
   text-decoration: none;
   position: relative;
-  padding: 8px 12px;
+  padding: 10px 15px;
   transition: color 0.3s ease, background 0.3s ease;
-  border-radius: 4px;
+  border-radius: 5px;
+  font-size: 1.1em;
+}
+
+.navigation a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  left: 50%;
+  bottom: 0;
+  background: #FFC107;
+  transition: width 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.navigation a:hover::after {
+  width: 100%;
 }
 
 .navigation a:hover {
-  color: #ffffff;
-  background: #4a4ae1;
+  color: #FFC107;
 }
 
+/* Mobile Menu Toggle */
 .menu-toggle {
   display: none;
   flex-direction: column;
@@ -140,10 +162,11 @@ export default {
   width: 24px;
   height: 18px;
   cursor: pointer;
+  transition: transform 0.3s ease;
 }
 
 .menu-toggle span {
-  background: #333333;
+  background: #ffffff;
   height: 2px;
   width: 100%;
   border-radius: 2px;
@@ -165,7 +188,7 @@ export default {
 @keyframes fadeInDown {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-10px);
   }
   to {
     opacity: 1;
@@ -173,6 +196,7 @@ export default {
   }
 }
 
+/* Mobile Navigation */
 .navigation.open {
   display: flex;
   flex-direction: column;
@@ -182,14 +206,15 @@ export default {
   top: 60px;
   left: 0;
   width: 100%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   padding: 20px;
   border-radius: 0 0 8px 8px;
+  animation: fadeInDown 0.3s ease-out;
 }
 
 .navigation.open ul {
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
 }
 
 .navigation.open ul li {
@@ -200,6 +225,7 @@ export default {
   width: 100%;
   text-align: left;
   padding: 10px 0;
+  color: #333333;
 }
 
 @media (max-width: 768px) {

@@ -1,22 +1,17 @@
 <template>
   <div class="login-page">
     <div class="login-container">
-      <div class="image-section">
-        <div class="overlay">
-          <h2>Welcome Back</h2>
-          <p>Please login to continue.</p>
-        </div>
-      </div>
       <div class="form-section">
-        <h1>Login</h1>
+        <h1>Welcome Back</h1>
+        <p class="subtitle">Please login to continue</p>
         <form @submit.prevent="submitForm">
           <div class="form-group">
             <label for="username">Username</label>
-            <input type="text" id="username" v-model="username" required>
+            <input type="text" id="username" v-model="username" required />
           </div>
           <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" id="password" v-model="password" required>
+            <input type="password" id="password" v-model="password" required />
           </div>
           <button type="submit" class="login-button">Login</button>
         </form>
@@ -32,142 +27,145 @@
     </div>
   </div>
 </template>
+
 <script>
-import axiosInstance from '@/plugins/axios';  // Import the configured Axios instance
+import axiosInstance from "@/plugins/axios";
 
 export default {
   data() {
     return {
-      username: '',
-      password: '',
-      errorMessage: '',
-      resetPasswordLink: false
+      username: "",
+      password: "",
+      errorMessage: "",
+      resetPasswordLink: false,
     };
   },
   methods: {
     async submitForm() {
-      this.errorMessage = '';  // Clear any previous error messages
-      this.resetPasswordLink = false; // Reset the link visibility
+      this.errorMessage = "";
+      this.resetPasswordLink = false;
       try {
-        const response = await axiosInstance.post('/login', {
-          email: this.username,  // Assuming the backend expects email, change if needed
-          password: this.password
+        const response = await axiosInstance.post("/login", {
+          email: this.username,
+          password: this.password,
         });
 
         if (response.data.token) {
-          localStorage.setItem('token', response.data.token);
-          this.$store.dispatch('login', response.data.token);
-          this.$router.push('/dashboard');
+          localStorage.setItem("token", response.data.token);
+          this.$store.dispatch("login", response.data.token);
+          this.$router.push("/dashboard");
         } else {
-          this.errorMessage = response.data.message || 'An error occurred. Please try again.';
+          this.errorMessage =
+            response.data.message || "An error occurred. Please try again.";
         }
       } catch (error) {
-        if (error.response && error.response.status === 401 && error.response.data.message === "Email not confirmed") {
-          this.errorMessage = 'Email not verified. Please check your email to verify your account.';
+        if (
+          error.response &&
+          error.response.status === 401 &&
+          error.response.data.message === "Email not confirmed"
+        ) {
+          this.errorMessage =
+            "Email not verified. Please check your email to verify your account.";
         } else if (error.response && error.response.status === 404) {
-          this.errorMessage = 'User not found. Please register first.';
+          this.errorMessage = "User not found. Please register first.";
         } else if (error.response && error.response.status === 401) {
           this.errorMessage = error.response.data.message;
           this.resetPasswordLink = true;
         } else {
-          this.errorMessage = error.response ? error.response.data.message : 'An error occurred. Please try again.';
+          this.errorMessage = error.response
+            ? error.response.data.message
+            : "An error occurred. Please try again.";
         }
       }
     },
     async resendVerificationEmail() {
       try {
-        const response = await axiosInstance.post('/resend-verification', {
-          email: this.username  // Assuming the username field contains the email
+        const response = await axiosInstance.post("/resend-verification", {
+          email: this.username,
         });
         alert(response.data.message);
       } catch (error) {
         if (error.response && error.response.status === 429) {
-          alert('You have exceeded the number of allowed requests. Please try again later.');
+          alert(
+            "You have exceeded the number of allowed requests. Please try again later."
+          );
         } else {
-          alert(error.response ? error.response.data.message : 'An error occurred. Please try again.');
+          alert(
+            error.response
+              ? error.response.data.message
+              : "An error occurred. Please try again."
+          );
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap");
 
 .login-page {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #6c63ff, #4a4ae1);
-  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #f3e7e9 0%, #e3eeff 100%);
+  font-family: "Poppins", sans-serif;
   padding: 20px;
   box-sizing: border-box;
 }
 
 .login-container {
-  display: flex;
   background-color: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  max-width: 800px;
+  border-radius: 15px;
+  padding: 40px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
   width: 100%;
-  flex-direction: row;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-container::before {
+  content: "";
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  background: linear-gradient(45deg, #6c63ff, #f59e42);
+  top: -75%;
+  left: -75%;
+  transform: rotate(45deg);
+  z-index: 1;
+  opacity: 0.15;
 }
 
 .login-container:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-}
-
-.image-section {
-  position: relative;
-  width: 50%;
-  background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?fit=crop&w=500&q=80') center center/cover no-repeat;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.overlay {
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  padding: 40px;
-  text-align: center;
-}
-
-.overlay h2 {
-  margin-bottom: 20px;
-  font-size: 24px;
-  animation: fadeInDown 1s;
-}
-
-.overlay p {
-  font-size: 16px;
-  line-height: 1.5;
-  animation: fadeInUp 1s;
-}
-
-.form-section {
-  padding: 40px;
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
 .form-section h1 {
-  text-align: center;
-  margin-bottom: 10px;
-  font-size: 24px;
-  animation: fadeInDown 1s;
+  margin-bottom: 15px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  position: relative;
+  z-index: 2;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #888;
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 2;
 }
 
 .form-group {
   margin-bottom: 20px;
+  position: relative;
+  z-index: 2;
 }
 
 .form-group label {
@@ -181,9 +179,15 @@ export default {
   width: 100%;
   padding: 12px;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 30px;
   box-sizing: border-box;
   font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: #6c63ff;
+  outline: none;
 }
 
 .login-button {
@@ -192,21 +196,24 @@ export default {
   background-color: #6c63ff;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 30px;
   cursor: pointer;
   font-size: 16px;
   margin-top: 20px;
+  font-weight: 500;
   transition: background-color 0.3s, transform 0.3s;
 }
 
 .login-button:hover {
-  background-color: #594acf;
-  transform: scale(1.05);
+  background-color: #4a4ae1;
+  transform: translateY(-2px);
 }
 
 .signup-text {
-  text-align: center;
   margin-top: 20px;
+  font-size: 14px;
+  position: relative;
+  z-index: 2;
 }
 
 .signup-text a {
@@ -218,85 +225,52 @@ export default {
   text-decoration: underline;
 }
 
-.message {
+.error {
   margin-top: 20px;
   font-size: 14px;
   color: red;
   text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.reset-link {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+  color: #6c63ff;
+  position: relative;
+  z-index: 2;
+}
+
+.reset-link a {
+  color: #6c63ff;
 }
 
 @media (max-width: 768px) {
   .login-container {
-    flex-direction: column;
-  }
-  
-  .image-section, .form-section {
-    width: 100%;
-  }
-
-  .image-section {
-    height: 200px;
-  }
-
-  .overlay {
     padding: 20px;
   }
 
-  .overlay h2 {
-    font-size: 20px;
+  .form-section h1 {
+    font-size: 24px;
   }
 
-  .overlay p {
+  .form-group input {
+    padding: 10px;
+  }
+
+  .login-button {
+    padding: 10px;
     font-size: 14px;
   }
 
-  .form-section {
-    padding: 20px;
+  .signup-text {
+    font-size: 12px;
+  }
+
+  .reset-link {
+    font-size: 12px;
   }
 }
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 730px) {
-  .form-group input[data-v-943f3ba8] {
-    width: 90%;
-    margin: 0 auto; /* Center the input field */
-  }
-  
-  .form-group input[data-v-8dac4566] {
-    width: 90%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-    font-size: 16px;}
-  
-    .login-button[data-v-8dac4566] {
-    width: 90%;
-    padding: 12px;
-    background-color: #6c63ff;
-    color: white;
-    }
-  }
-    
 </style>

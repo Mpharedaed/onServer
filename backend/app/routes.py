@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify, url_for, current_app
 from flask_mail import Message
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from .models import User, Post
+from model.user import User
+from model.post import Post
 import jwt
 from flask_limiter.util import get_remote_address
 from datetime import datetime, timedelta

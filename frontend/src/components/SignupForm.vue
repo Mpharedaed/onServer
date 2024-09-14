@@ -1,52 +1,73 @@
 <template>
-  <div class="signup-page">
-    <div class="signup-container">
-      <div class="image-section">
-        <div class="overlay">
-          <h2>Welcome to Signup Form</h2>
-          <p>Join our community and start your journey today.</p>
-        </div>
-      </div>
+  <div class="auth-page">
+    <div class="auth-container">
       <div class="form-section">
-        <h1>Sign Up</h1>
+        <h1>Join Our Community</h1>
+        <p class="subtitle">Create your account in just a few easy steps</p>
         <form @submit.prevent="submitForm" aria-live="polite">
-          <!-- Step 1 -->
-          <div v-if="step === 1">
-            <div class="form-group">
-              <label for="fullname">Full Name</label>
-              <input type="text" id="fullname" v-model="fullname" required>
+          <transition name="slide-fade" mode="out-in">
+            <div v-if="step === 1" key="step1">
+              <div class="form-group">
+                <label for="fullname">Full Name</label>
+                <input type="text" id="fullname" v-model="fullname" required />
+              </div>
+              <button type="button" class="next-button" @click="nextStep">
+                Next
+              </button>
             </div>
-            <button type="button" class="next-button" @click="nextStep">Next</button>
-          </div>
-          <!-- Step 2 -->
-          <div v-if="step === 2">
-            <div class="form-group">
-              <label for="username">Username</label>
-              <input type="text" id="username" v-model="username" required>
+            <div v-if="step === 2" key="step2">
+              <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" v-model="username" required />
+              </div>
+              <div class="button-group">
+                <button type="button" class="prev-button" @click="prevStep">
+                  Back
+                </button>
+                <button type="button" class="next-button" @click="nextStep">
+                  Next
+                </button>
+              </div>
             </div>
-            <button type="button" class="prev-button" @click="prevStep">Back</button>
-            <button type="button" class="next-button" @click="nextStep">Next</button>
-          </div>
-          <!-- Step 3 -->
-          <div v-if="step === 3">
-            <div class="form-group">
-              <label for="email">Email Address</label>
-              <input type="email" id="email" v-model="email" required>
+            <div v-if="step === 3" key="step3">
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" v-model="email" required />
+              </div>
+              <div class="button-group">
+                <button type="button" class="prev-button" @click="prevStep">
+                  Back
+                </button>
+                <button type="button" class="next-button" @click="nextStep">
+                  Next
+                </button>
+              </div>
             </div>
-            <button type="button" class="prev-button" @click="prevStep">Back</button>
-            <button type="button" class="next-button" @click="nextStep">Next</button>
-          </div>
-          <!-- Step 4 -->
-          <div v-if="step === 4">
-            <div class="form-group">
-              <label for="password">Password</label>
-              <input type="password" id="password" v-model="password" required>
+            <div v-if="step === 4" key="step4">
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  v-model="password"
+                  required
+                />
+              </div>
+              <div class="button-group">
+                <button type="button" class="prev-button" @click="prevStep">
+                  Back
+                </button>
+                <button type="submit" class="create-account">
+                  Create an Account
+                </button>
+              </div>
             </div>
-            <button type="button" class="prev-button" @click="prevStep">Back</button>
-            <button type="submit" class="create-account">Create an Account</button>
-          </div>
+          </transition>
         </form>
-        <p class="signin-text">Already a member? <router-link to="/login">Sign In</router-link></p>
+        <p class="signin-text">
+          Already a member?
+          <router-link to="/login">Sign In</router-link>
+        </p>
         <div v-if="message" class="message">{{ message }}</div>
       </div>
     </div>
@@ -54,17 +75,17 @@
 </template>
 
 <script>
-import axiosInstance from '@/plugins/axios';
+import axiosInstance from "@/plugins/axios";
 
 export default {
   data() {
     return {
       step: 1,
-      fullname: '',
-      username: '',
-      email: '',
-      password: '',
-      message: ''
+      fullname: "",
+      username: "",
+      email: "",
+      password: "",
+      message: "",
     };
   },
   methods: {
@@ -79,105 +100,96 @@ export default {
       }
     },
     async submitForm() {
-      this.message = ''; // Clear previous messages
+      this.message = ""; // Clear previous messages
       try {
-        const response = await axiosInstance.post('/signup', {
+        const response = await axiosInstance.post("/signup", {
           fullname: this.fullname,
           username: this.username,
           email: this.email,
-          password: this.password
+          password: this.password,
         });
         if (response.data.success) {
-          this.message = 'Signup successful! Redirecting to login page...';
+          this.message = "Signup successful! Redirecting to login page...";
           setTimeout(() => {
-            if (this.$route.path !== '/login') {
-              this.$router.push('/login');
+            if (this.$route.path !== "/login") {
+              this.$router.push("/login");
             }
           }, 2000);
         } else {
-          this.message = response.data.error || 'An error occurred. Please try again.';
+          this.message =
+            response.data.error || "An error occurred. Please try again.";
         }
       } catch (error) {
-        this.message = error.response ? error.response.data.error : 'An error occurred. Please try again.';
+        this.message = error.response
+          ? error.response.data.error
+          : "An error occurred. Please try again.";
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap");
 
-.signup-page {
+.auth-page {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #6c63ff, #4a4ae1);
-  font-family: 'Roboto', sans-serif;
+  font-family: "Poppins", sans-serif;
   padding: 20px;
   box-sizing: border-box;
-}
-
-.signup-container {
-  display: flex;
-  background-color: white;
-  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  max-width: 1000px;
-  width: 100%;
-  flex-direction: row;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.signup-container:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-}
-
-.image-section {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
   position: relative;
-  width: 50%;
-  background: url('https://images.unsplash.com/photo-1578070181910-f1e514afdd08?q=80&w=1833&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center center/cover no-repeat;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.overlay {
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
+.auth-page::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 70%);
+  transform: rotate(30deg);
+}
+
+.auth-page::after {
+  content: "";
+  position: absolute;
+  bottom: -50px;
+  left: -50px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 70%);
+  transform: rotate(-30deg);
+}
+
+.auth-container {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
   padding: 40px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  max-width: 450px;
+  width: 100%;
   text-align: center;
-}
-
-.overlay h2 {
-  margin-bottom: 20px;
-  font-size: 24px;
-  animation: fadeInDown 1s;
-}
-
-.overlay p {
-  font-size: 16px;
-  line-height: 1.5;
-  animation: fadeInUp 1s;
-}
-
-.form-section {
-  padding: 40px;
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  position: relative;
+  z-index: 1;
 }
 
 .form-section h1 {
-  text-align: center;
-  margin-bottom: 10px;
-  font-size: 24px;
-  animation: fadeInDown 1s;
+  margin-bottom: 15px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #888;
+  margin-bottom: 30px;
 }
 
 .form-group {
@@ -195,57 +207,51 @@ export default {
   width: 100%;
   padding: 12px;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 30px;
   box-sizing: border-box;
   font-size: 16px;
+  transition: border-color 0.3s ease;
 }
 
 .form-group input:focus {
   border-color: #6c63ff;
+  outline: none;
 }
 
-.next-button, .prev-button {
+.button-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.next-button,
+.prev-button,
+.create-account {
   padding: 12px 20px;
-  margin-top: 20px;
   background-color: #6c63ff;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 30px;
   cursor: pointer;
   font-size: 16px;
+  margin-top: 20px;
+  font-weight: 500;
   transition: background-color 0.3s, transform 0.3s;
 }
 
-.next-button:hover, .prev-button:hover {
-  background-color: #594acf;
-  transform: scale(1.05);
+.next-button:hover,
+.prev-button:hover,
+.create-account:hover {
+  background-color: #4a4ae1;
+  transform: translateY(-2px);
 }
 
 .prev-button {
   margin-right: 10px;
 }
 
-.create-account {
-  width: 100%;
-  padding: 12px;
-  background-color: #6c63ff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 20px;
-  transition: background-color 0.3s, transform 0.3s;
-}
-
-.create-account:hover {
-  background-color: #594acf;
-  transform: scale(1.05);
-}
-
 .signin-text {
-  text-align: center;
   margin-top: 20px;
+  font-size: 14px;
 }
 
 .signin-text a {
@@ -264,85 +270,39 @@ export default {
   text-align: center;
 }
 
-@media (max-width: 768px) {
-  .signup-container {
-    flex-direction: column;
-  }
-  
-  .image-section, .form-section {
-    width: 100%;
-  }
-
-  .image-section {
-    height: 200px;
-  }
-
-  .overlay {
-    padding: 20px;
-  }
-
-  .overlay h2 {
-    font-size: 20px;
-  }
-
-  .overlay p {
-    font-size: 14px;
-  }
-
-  .form-section {
-    padding: 20px;
-  }
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.5s ease;
 }
 
-@media (max-width: 480px) {
-  .form-group input {
-    font-size: 14px;
-    padding: 10px;
-  }
+.slide-fade-enter,
+.slide-fade-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
+}
 
-  .create-account {
-    font-size: 14px;
-    padding: 10px;
-  }
-
-  .overlay h2 {
-    font-size: 18px;
-  }
-
-  .overlay p {
-    font-size: 12px;
+@media (max-width: 768px) {
+  .auth-container {
+    padding: 20px;
   }
 
   .form-section h1 {
-    font-size: 20px;
+    font-size: 24px;
   }
 
-  .social-buttons button {
-    font-size: 20px;
-    margin: 0 5px;
-  }
-
-  .divider {
-    margin: 10px 0;
-  }
-
-  .divider::before, .divider::after {
-    width: 40%;
-  }
-
-  .signup-container {
+  .form-group input {
     padding: 10px;
   }
 
-  .form-section {
-    padding: 20px;
-    width: 100%;
-    box-sizing: border-box;
+  .next-button,
+  .prev-button,
+  .create-account {
+    padding: 10px;
+    font-size: 14px;
   }
 
-  .form-group {
-    padding: 0 10px;
-    box-sizing: border-box;
+  .signin-text {
+    font-size: 12px;
   }
 }
 </style>
