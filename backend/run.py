@@ -22,7 +22,7 @@ limiter = Limiter(
 app.register_blueprint(auth_bp)
 
 # Get the port from environment variable or use default port 5005
-port = int(os.environ.get('PORT', 5005))
+port = int(os.environ.get('PORT', 5000))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
