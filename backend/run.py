@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -20,7 +21,8 @@ limiter = Limiter(
 # Register Blueprints
 app.register_blueprint(auth_bp)
 
-# Other configurations...
+# Get the port from environment variable or use default port 5005
+port = int(os.environ.get('PORT', 5005))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5005)
+    app.run(host='0.0.0.0', port=port)
