@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from app.extensions import init_redis, limiter
 from app.config import Config  # Import the config class
