@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 export const getPotentialFriends = async () => {
-  return axios.get('http://localhost:5000/api/potential_friends', {
+  return axios.get('https://blogi-36jo.onrender.com/api/potential_friends', {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
@@ -10,7 +10,7 @@ export const getPotentialFriends = async () => {
 };
 
 export const sendFriendRequest = async (userId) => {
-  return axios.post('http://localhost:5000/api/friendship/add', { user2_id: userId }, {
+  return axios.post('https://blogi-36jo.onrender.com/api/friendship/add', { user2_id: userId }, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
