@@ -9,6 +9,11 @@ import os
 # Load environment variables from .env file
 load_dotenv()
 
+# Initialize extensions here
+mongo = PyMongo()
+mail = Mail()
+jwt = JWTManager()
+
 def create_app():
     app = Flask(__name__)
 
@@ -32,22 +37,18 @@ def create_app():
     CORS(app, resources={r"/api/*": {"origins": "http://localhost:8081"}})
 
     # Initialize extensions
-    mongo = PyMongo(app)
-    mail = Mail(app)
-    jwt = JWTManager(app)
+    mongo.init_app(app)
+    mail.init_app(app)
+    jwt.init_app(app)
 
-    # Make mongo and mail accessible through the app instance
-    app.mongo = mongo
-    app.mail = mail
-
-    # Blueprint registration
-    from routes.auth import auth_bp
-    app.register_blueprint(auth_bp, url_prefix='/api')
+    # Register Blueprints
+    from app.routes.auth import auth_bp
+    app.register_blueprint(auth_bp, url_prefix='/api/auth')
 
     @app.route('/')
     def index():
         return "Hello, World!"
-    
+
     return app
 
 def ensure_upload_dir(upload_folder):
