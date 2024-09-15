@@ -33,8 +33,8 @@ def create_app():
     # Ensure the upload directory exists
     ensure_upload_dir(app.config['UPLOAD_FOLDER'])
 
-    # Enable CORS for all routes
-    CORS(app, resources={r"/api/*": {"origins": "http://localhost:8081"}})
+# Enable CORS for the API
+    CORS(app, resources={r"/api/*": {"origins": "https://www.dawlatemad.com"}})
 
     # Initialize extensions
     mongo.init_app(app)
