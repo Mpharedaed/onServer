@@ -118,12 +118,15 @@ export default {
   name: "HomePage",
   mounted() {
     // Initialize any JavaScript plugins or components here
+    // For example, you can initialize the testimonial slider
   },
 };
 </script>
 
 
-<style scoped>
+
+
+<style>
 /* Variables */
 :root {
   --primary-color: #6a0572;
@@ -134,121 +137,7 @@ export default {
   --font-family: 'Poppins', sans-serif;
 }
 
-/* Global Styles */
-.home {
-  font-family: var(--font-family);
-  color: var(--text-color);
-  background-color: var(--background-color);
-  margin: 0;
-  padding: 0;
-  line-height: 1.6;
-}
-
-/* Navbar */
-.navbar {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  padding: 20px 50px;
-  display: flex;
-  justify-content: space-between;
-  z-index: 10;
-}
-
-.logo {
-  color: var(--light-text-color);
-  font-size: 1.8em;
-  font-weight: bold;
-}
-
-.nav-links {
-  list-style: none;
-  display: flex;
-}
-
-.nav-links li {
-  margin-left: 30px;
-}
-
-.nav-links a {
-  color: var(--light-text-color);
-  text-decoration: none;
-  font-size: 1.1em;
-  transition: color 0.3s ease;
-}
-
-.nav-links a:hover {
-  color: var(--secondary-color);
-}
-
-/* Hero Section */
-.hero-section {
-  position: relative;
-  height: 100vh;
-  background-image: url("@/assets/images/hero-background.jpg");
-  background-size: cover;
-  background-position: center;
-  overflow: hidden;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.content-wrapper {
-  position: relative;
-  z-index: 2;
-  height: 100%;
-}
-
-.hero-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  color: var(--light-text-color);
-}
-
-.hero-content h1 {
-  font-size: 4em;
-  font-weight: 900;
-  text-transform: uppercase;
-  margin-bottom: 15px;
-}
-
-.hero-content p {
-  font-size: 1.5em;
-  margin-bottom: 30px;
-}
-
-.cta-button {
-  background-color: var(--secondary-color);
-  color: var(--light-text-color);
-  padding: 15px 40px;
-  border: none;
-  border-radius: 50px;
-  font-size: 1.2em;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  box-shadow: 0 8px 15px rgba(255, 111, 97, 0.4);
-}
-
-.cta-button:hover {
-  background-color: #ff4a3d;
-  transform: scale(1.05);
-}
-
-.pulse-button {
-  animation: pulse 2s infinite;
-}
-
+/* Keyframe Animations */
 @keyframes pulse {
   0% {
     box-shadow: 0 0 0 0 rgba(255, 111, 97, 0.7);
@@ -259,22 +148,6 @@ export default {
   100% {
     box-shadow: 0 0 0 0 rgba(255, 111, 97, 0);
   }
-}
-
-/* Scroll Indicator */
-.scroll-indicator {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.scroll-indicator span {
-  display: block;
-  width: 2px;
-  height: 50px;
-  background-color: var(--light-text-color);
-  animation: scroll 2s infinite;
 }
 
 @keyframes scroll {
@@ -292,94 +165,10 @@ export default {
   }
 }
 
-/* Fade-in Animations */
-.fade-in {
-  opacity: 0;
-  animation: fadeIn 1s forwards;
-}
-
-.fade-in-delay {
-  opacity: 0;
-  animation: fadeIn 1s forwards 0.5s;
-}
-
 @keyframes fadeIn {
   to {
     opacity: 1;
   }
-}
-
-/* Introduction Section */
-.introduction {
-  padding: 100px 20px;
-  text-align: center;
-  background-color: #fff;
-}
-
-.introduction .container {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.introduction h2 {
-  font-size: 2.8em;
-  color: var(--primary-color);
-  margin-bottom: 30px;
-}
-
-.introduction p {
-  font-size: 1.2em;
-  line-height: 1.8;
-  color: #555;
-}
-
-/* Services Section */
-.services {
-  padding: 100px 20px;
-  background-color: var(--background-color);
-}
-
-.services .container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.services h2 {
-  font-size: 2.8em;
-  color: var(--primary-color);
-  text-align: center;
-  margin-bottom: 60px;
-}
-
-.service-cards {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
-.service-card {
-  background-color: #fff;
-  padding: 40px;
-  margin: 15px;
-  border-radius: 15px;
-  flex: 1;
-  min-width: 280px;
-  max-width: 360px;
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.service-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 5px;
-  background: linear-gradient(90deg, transparent, var(--secondary-color), transparent);
-  animation: borderSlide 3s infinite;
 }
 
 @keyframes borderSlide {
@@ -394,145 +183,10 @@ export default {
   }
 }
 
-.service-icon {
-  font-size: 3em;
-  color: var(--primary-color);
-  margin-bottom: 20px;
-}
-
-.service-card h3 {
-  margin-bottom: 15px;
-  font-size: 1.8em;
-  color: var(--text-color);
-}
-
-.service-card p {
-  font-size: 1.1em;
-  color: #777;
-}
-
-.service-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-}
-
-/* Testimonials Section */
-.testimonials {
-  padding: 100px 20px;
-  background-color: #fff;
-}
-
-.testimonials .container {
-  max-width: 1000px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.testimonials h2 {
-  font-size: 2.8em;
-  color: var(--primary-color);
-  margin-bottom: 60px;
-}
-
-.testimonial-slider {
-  position: relative;
-  overflow: hidden;
-}
-
-.testimonial-slide {
-  opacity: 0;
-  position: absolute;
-  left: 0;
-  width: 100%;
-  transition: opacity 1s ease-in-out;
-}
-
-.testimonial-slide.active {
-  opacity: 1;
-  position: relative;
-}
-
-.testimonial-slide p {
-  font-size: 1.5em;
-  font-style: italic;
-  color: #555;
-  margin-bottom: 20px;
-}
-
-.testimonial-slide h4 {
-  font-size: 1.2em;
-  font-weight: bold;
-  color: var(--secondary-color);
-}
-
-/* Contact Section */
-.contact {
-  padding: 100px 20px;
-  background-color: var(--background-color);
-  text-align: center;
-}
-
-.contact .container {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.contact h2 {
-  font-size: 2.8em;
-  color: var(--primary-color);
-  margin-bottom: 30px;
-}
-
-.contact p {
-  font-size: 1.2em;
-  color: #555;
-  margin-bottom: 40px;
-}
-
-.contact .cta-button {
-  padding: 15px 50px;
-}
-
-/* Footer */
-.footer {
-  background-color: var(--primary-color);
-  color: var(--light-text-color);
-  padding: 20px 0;
-  text-align: center;
-}
-
-.footer p {
+/* Global Reset (Optional) */
+* {
+  box-sizing: border-box;
   margin: 0;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .service-cards {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .navbar {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .nav-links {
-    flex-direction: column;
-    margin-top: 10px;
-  }
-
-  .nav-links li {
-    margin: 10px 0;
-  }
-
-  .hero-content h1 {
-    font-size: 2.5em;
-  }
-
-  .hero-content p {
-    font-size: 1.2em;
-  }
+  padding: 0;
 }
 </style>
-
