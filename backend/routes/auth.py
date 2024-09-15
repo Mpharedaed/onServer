@@ -188,7 +188,7 @@ def resend_verification():
             'Please verify your email',
             recipients=[email]
         )
-        verification_url = f'http://localhost:8081/verify/{token}'
+        verification_url = f'https://blogi-36jo.onrender.com/verify/{token}'
         msg.body = f'Please click the following link to verify your email: {verification_url}'
         try:
             current_app.mail.send(msg)
@@ -237,7 +237,7 @@ def signup():
         'Please verify your email',
         recipients=[email]
     )
-    verification_url = f'http://localhost:8081/verify/{verification_token}'
+    verification_url = f'https://blogi-36jo.onrender.com/verify/{verification_token}'
     msg.body = f'Please click the following link to verify your email: {verification_url}'
     try:
         current_app.mail.send(msg)
