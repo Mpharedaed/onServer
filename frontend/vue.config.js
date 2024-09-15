@@ -2,7 +2,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:5000',
+        target: 'https://blogi-36jo.onrender.com',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
