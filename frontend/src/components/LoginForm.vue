@@ -27,7 +27,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import axiosInstance from "@/plugins/axios";
 
@@ -44,21 +43,39 @@ export default {
     async submitForm() {
       this.errorMessage = "";
       this.resetPasswordLink = false;
+
+      // Debugging: Log the data being sent
+      console.log("Submitting form with email:", this.username);
+      console.log("Password:", this.password);
+
       try {
         const response = await axiosInstance.post("/login", {
           email: this.username,
           password: this.password,
         });
 
+        // Debugging: Log the response received from backend
+        console.log("Response from backend:", response);
+
         if (response.data.token) {
           localStorage.setItem("token", response.data.token);
           this.$store.dispatch("login", response.data.token);
           this.$router.push("/dashboard");
         } else {
-          this.errorMessage =
-            response.data.message || "An error occurred. Please try again.";
+          this.errorMessage = response.data.message || "An error occurred. Please try again.";
+          // Debugging: Log in case token is missing in response
+          console.log("No token received, response:", response);
         }
       } catch (error) {
+        // Debugging: Log the full error object
+        console.log("Error during login request:", error);
+
+        if (error.response) {
+          // Log specific error response for easier debugging
+          console.log("Error response status:", error.response.status);
+          console.log("Error response data:", error.response.data);
+        }
+
         if (
           error.response &&
           error.response.status === 401 &&
@@ -83,12 +100,15 @@ export default {
         const response = await axiosInstance.post("/resend-verification", {
           email: this.username,
         });
+        // Debugging: Log resend verification response
+        console.log("Resend verification response:", response);
         alert(response.data.message);
       } catch (error) {
+        // Debugging: Log errors in resend verification
+        console.log("Error during resend verification:", error);
+
         if (error.response && error.response.status === 429) {
-          alert(
-            "You have exceeded the number of allowed requests. Please try again later."
-          );
+          alert("You have exceeded the number of allowed requests. Please try again later.");
         } else {
           alert(
             error.response

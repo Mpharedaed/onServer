@@ -144,28 +144,76 @@ class User:
 @auth_bp.route('/login', methods=['POST', 'OPTIONS'])
 @cross_origin()
 def login():
-    if request.method == 'OPTIONS':
-        return _build_cors_prelight_response()
-    data = request.get_json()
-    email = data.get('email')
-    password = data.get('password')
-    current_app.logger.debug('Login attempt for email: %s', email)
-    user = User.get_user_by_email(email)
-    if not user:
-        current_app.logger.debug('Login failed: User not found')
-        return jsonify({"message": "User not found"}), 404
-    if not user.verified:
-        current_app.logger.debug('Login failed: Email not confirmed')
-        return jsonify({"message": "Email not confirmed"}), 401
-    if user.check_password(password):
-        token = jwt.encode({
-            'user_id': str(user.id),
-            'exp': datetime.utcnow() + timedelta(hours=1)
-        }, current_app.config['SECRET_KEY'], algorithm='HS256')
-        current_app.logger.debug('Login successful, token generated')
-        return jsonify({"token": token})
-    current_app.logger.debug('Login failed: Invalid credentials')
-    return jsonify({"message": "Invalid credentials"}), 401
+    try:
+        # Log the request method and any headers
+        print("Request method:", request.method)
+        print("Request headers:", request.headers)
+        print("Request JSON data:", request.get_json())
+        
+        if request.method == 'OPTIONS':
+            return _build_cors_prelight_response()
+
+        # Log that the login route has been accessed
+        current_app.logger.debug("Login route accessed.")
+        
+        # Get the request data
+        data = request.get_json()
+
+        # Check if data is received
+        if not data:
+            current_app.logger.debug("No data received in request")
+            return jsonify({"message": "No data received"}), 400
+
+        # Log received data
+        current_app.logger.debug(f"Received data: {data}")
+
+        # Extract email and password from the request
+        email = data.get('email')
+        password = data.get('password')
+
+        # Check if email and password are present
+        if not email or not password:
+            current_app.logger.debug("Email or password missing from request")
+            return jsonify({"message": "Email or password is missing"}), 400
+
+        # Log that the login attempt is starting
+        current_app.logger.debug(f"Login attempt for email: {email}")
+
+        # Try to get the user by email
+        user = User.get_user_by_email(email)
+        if not user:
+            current_app.logger.debug(f"User not found for email: {email}")
+            return jsonify({"message": "User not found"}), 404
+
+        # Check if the email is verified
+        if not user.verified:
+            current_app.logger.debug(f"Email not verified for user: {email}")
+            return jsonify({"message": "Email not confirmed"}), 401
+
+        # Log that the user was found and is verified
+        current_app.logger.debug(f"User found and verified for email: {email}")
+
+        # Check the password
+        if user.check_password(password):
+            token = jwt.encode({
+                'user_id': str(user.id),
+                'exp': datetime.utcnow() + timedelta(hours=1)
+            }, current_app.config['SECRET_KEY'], algorithm='HS256')
+
+            # Log token generation success
+            current_app.logger.debug(f"Login successful for {email}, token generated")
+
+            return jsonify({"token": token})
+        else:
+            # Log invalid credentials
+            current_app.logger.debug(f"Login failed: Invalid password for {email}")
+            return jsonify({"message": "Invalid credentials"}), 401
+
+    except Exception as e:
+        # Catch all exceptions and log the error
+        current_app.logger.error(f"An error occurred in the login route: {e}")
+        return jsonify({"message": "Internal server error"}), 500
+
 
 @auth_bp.route('/resend-verification', methods=['POST', 'OPTIONS'])
 @cross_origin()
