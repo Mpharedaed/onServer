@@ -14,9 +14,9 @@ app.config.from_object(Config)
 # Initialize Redis and other components
 init_redis(app)
 limiter.init_app(app)
+mongo.init_app(app)  # Corrected the indentation
 
 # Register Blueprints and other app components
-
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
 
 # app.register_blueprint(auth_bp)
