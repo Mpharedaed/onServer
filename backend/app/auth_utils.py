@@ -6,24 +6,6 @@ from flask_mail import Message
 
 auth_bp = Blueprint('auth', __name__)
 
-@auth_bp.route('/login', methods=['POST', 'OPTIONS'])
-def login():
-    if request.method == 'OPTIONS':
-        return jsonify({}), 200
-    data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
-
-    user = User.get_user_by_username(username)
-    if not user or not check_password_hash(user.password_hash, password):
-        return jsonify({'error': 'Invalid credentials'}), 401
-
-    if not user.verified:
-        current_app.logger.error(f'User {username} has not verified their email.')
-        return jsonify({'error': 'Email not verified. Please check your email to verify your account.'}), 401
-
-    token = create_access_token(identity=str(user.id))
-    return jsonify({'token': token}), 200
 
 @auth_bp.route('/resend-verification', methods=['POST', 'OPTIONS'])
 def resend_verification_email():

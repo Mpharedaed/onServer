@@ -5,6 +5,7 @@ from flask_mail import Message
 import jwt
 from datetime import datetime, timedelta
 from flask_cors import cross_origin
+from app import mongo
 
 # Define the blueprint
 auth_bp = Blueprint('auth', __name__)
@@ -41,7 +42,7 @@ class User:
     @staticmethod
     def get_user_by_username(username):
         current_app.logger.debug('Getting user by username: %s', username)
-        user_data = current_app.mongo.db.users.find_one({'username': username})
+        user_data = mongo.db.users.find_one({'username': username})
         if user_data:
             current_app.logger.debug('User data found: %s', user_data)
             return User(
@@ -59,7 +60,7 @@ class User:
     @staticmethod
     def get_user_by_email(email):
         current_app.logger.debug('Getting user by email: %s', email)
-        user_data = current_app.mongo.db.users.find_one({'email': email})
+        user_data = mongo.db.users.find_one({'email': email})
         if user_data:
             current_app.logger.debug('User data found: %s', user_data)
             return User(
@@ -85,12 +86,12 @@ class User:
             'last_password_reset_email_sent': self.last_password_reset_email_sent
         }
         current_app.logger.debug('Saving user to DB: %s', user_data)
-        current_app.mongo.db.users.replace_one({'_id': self.id}, user_data, upsert=True)
+        mongo.db.users.replace_one({'_id': self.id}, user_data, upsert=True)
 
     @staticmethod
     def find_by_id(user_id):
         current_app.logger.debug('Finding user by ID: %s', user_id)
-        user_data = current_app.mongo.db.users.find_one({'_id': ObjectId(user_id)})
+        user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
         if user_data:
             current_app.logger.debug('User data found: %s', user_data)
             return User(
@@ -131,8 +132,8 @@ class User:
 
     @staticmethod
     def get_potential_friends(user_id):
-        all_users = current_app.mongo.db.users.find({'_id': {'$ne': ObjectId(user_id)}})
-        user = current_app.mongo.db.users.find_one({'_id': ObjectId(user_id)})
+        all_users = mongo.db.users.find({'_id': {'$ne': ObjectId(user_id)}})
+        user = mongo.db.users.find_one({'_id': ObjectId(user_id)})
         friend_ids = [ObjectId(friend_id) for friend_id in user.get('friends', [])]
 
         potential_friends = []

@@ -2,7 +2,7 @@ import os
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
-    MONGO_URI = os.environ.get('MONGO_URI') or 'mongodb+srv://mohamedredaed:red88luck@cluster0.jcad1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+    MONGO_URI = os.environ.get('MONGO_URI') or 'mongodb+srv://mohamedredaed:red88luck@cluster0.jcad1.mongodb.net/Dawlat?retryWrites=true&w=majority&appName=Cluster0'
     DEBUG = os.environ.get('FLASK_DEBUG', 'False').lower() in ['true', '1', 't']
     JWT_ALGORITHM = 'HS256'
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'your_jwt_secret_key'
