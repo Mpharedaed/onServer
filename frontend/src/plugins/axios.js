@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://blogi-36jo.onrender.com/api/',
+  baseURL: 'https://blogi-36jo.onrender.com/api/auth',
   headers: {
     'Content-Type': 'application/json'
   }
