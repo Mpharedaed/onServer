@@ -5,6 +5,13 @@ from app.config import Config  # Import the config class
 from routes.auth import auth_bp
 from app import create_app, mongo
 from dotenv import load_dotenv
+from flask_mail import Mail
+
+# Load environment variables
+load_dotenv()
+
+# Initialize Flask-Mail
+mail = Mail()  # This was missing in your original code
 
 app = Flask(__name__)
 
@@ -14,7 +21,8 @@ app.config.from_object(Config)
 # Initialize Redis and other components
 init_redis(app)
 limiter.init_app(app)
-mongo.init_app(app)  # Corrected the indentation
+mongo.init_app(app)  # Initialize MongoDB
+mail.init_app(app)  # Initialize Flask-Mail with the app
 
 # Register Blueprints and other app components
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
