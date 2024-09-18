@@ -2,14 +2,21 @@
   <div id="home">
     <!-- Hero Section -->
     <section class="hero">
-      <div class="container">
+      <div class="container hero-container">
         <div class="hero-content">
-          <h1 class="hero-title" :class="{ 'animate-fade-in': heroVisible }">Dawlat Emad</h1>
-          <p class="hero-subtitle" :class="{ 'animate-slide-up': heroVisible }">Your Journey to Self-Discovery and Success Starts Here</p>
-          <button class="hero-button" @click="bookSession" :class="{ 'animate-zoom-in': heroVisible }">Book a Session</button>
+          <h1 class="hero-title">Dawlat Emad</h1>
+          <p class="hero-subtitle">
+            Your Journey to Self-Discovery and Success Starts Here
+          </p>
+          <!-- Changed @click event to openStory -->
+          <button class="hero-button" @click="openStory">My Story</button>
         </div>
-        <div class="hero-image-wrapper" :class="{ 'animate-fade-in': heroVisible }">
-          <img src="@/assets/images/dawlat.png" alt="Dawlat Emad" class="hero-image" />
+        <div class="hero-image-wrapper">
+          <img
+            src="@/assets/images/dawlat.png"
+            alt="Dawlat Emad"
+            class="hero-image"
+          />
         </div>
       </div>
       <div class="scroll-indicator" @click="scrollToContent">
@@ -17,22 +24,37 @@
       </div>
     </section>
 
-    <!-- Introduction Section -->
-    <section class="introduction">
-      <div class="container">
-        <h2 class="section-title" :class="{ 'animate-slide-left': introVisible }">Welcome to My Coaching Space</h2>
-        <p class="section-text" :class="{ 'animate-slide-right': introVisible }">
-          I’m Dawlat Emad, a certified life coach dedicated to helping you achieve your personal and professional goals. Together, we can navigate the challenges of life, unlock your potential, and build the life you’ve always dreamed of.
+    <!-- Added Story Widget -->
+    <div
+      class="story-widget"
+      v-if="showStory"
+      @click.self="closeStory"
+    >
+      <div class="story-content">
+        <button class="close-button" @click="closeStory">&times;</button>
+        <h2 class="story-title">About Dawlat Emad</h2>
+        <p class="story-text">
+          <!-- Replace this text with Dawlat's actual story -->
+          Dawlat Emad is a passionate life coach dedicated to helping individuals discover their true potential and achieve their dreams. With years of experience in personal development, Dawlat provides insightful guidance and support to empower others on their journey to self-improvement.
         </p>
       </div>
-    </section>
-
+    </div>
     <!-- Services Section -->
     <section class="services">
       <div class="container">
-        <h2 class="section-title" :class="{ 'animate-slide-up': servicesVisible }">Services I Offer</h2>
+        <h2
+          class="section-title"
+          :class="{ 'animate-slide-up': servicesVisible }"
+        >
+          Services I Offer
+        </h2>
         <div class="services-grid">
-          <div class="service-card" v-for="(service, index) in services" :key="index" :class="{ 'animate-fade-in': servicesVisible }">
+          <div
+            class="service-card"
+            v-for="(service, index) in services"
+            :key="index"
+            :class="{ 'animate-fade-in': servicesVisible }"
+          >
             <i :class="service.icon + ' service-icon'"></i>
             <h3 class="service-title">{{ service.title }}</h3>
             <p class="service-description">{{ service.description }}</p>
@@ -44,9 +66,21 @@
     <!-- Testimonials Section -->
     <section class="testimonials">
       <div class="container">
-        <h2 class="section-title" :class="{ 'animate-slide-left': testimonialsVisible }">What My Clients Say</h2>
-        <div class="testimonials-slider" :class="{ 'animate-fade-in': testimonialsVisible }">
-          <div class="testimonial-card" v-for="(testimonial, index) in testimonials" :key="index">
+        <h2
+          class="section-title"
+          :class="{ 'animate-slide-left': testimonialsVisible }"
+        >
+          What My Clients Say
+        </h2>
+        <div
+          class="testimonials-slider"
+          :class="{ 'animate-fade-in': testimonialsVisible }"
+        >
+          <div
+            class="testimonial-card"
+            v-for="(testimonial, index) in testimonials"
+            :key="index"
+          >
             <p class="testimonial-quote">"{{ testimonial.quote }}"</p>
             <h4 class="testimonial-author">- {{ testimonial.author }}</h4>
           </div>
@@ -57,13 +91,30 @@
     <!-- Contact Section -->
     <section class="contact">
       <div class="container">
-        <h2 class="section-title" :class="{ 'animate-slide-up': contactVisible }">Get in Touch</h2>
-        <p class="section-text" :class="{ 'animate-fade-in': contactVisible }">Ready to take the next step? Let's connect and start your journey.</p>
-        <button class="contact-button" @click="bookSession" :class="{ 'animate-zoom-in': contactVisible }">Book a Session</button>
+        <h2
+          class="section-title"
+          :class="{ 'animate-slide-up': contactVisible }"
+        >
+          Get in Touch
+        </h2>
+        <p
+          class="section-text"
+          :class="{ 'animate-fade-in': contactVisible }"
+        >
+          Ready to take the next step? Let's connect and start your journey.
+        </p>
+        <button
+          class="contact-button"
+          @click="bookSession"
+          :class="{ 'animate-zoom-in': contactVisible }"
+        >
+          Book a Session
+        </button>
       </div>
     </section>
   </div>
 </template>
+
 
 <script>
 import { ref, onMounted } from 'vue';
@@ -71,8 +122,8 @@ import { ref, onMounted } from 'vue';
 export default {
   name: 'HomePage',
   setup() {
+    // Reactive references for visibility states
     const heroVisible = ref(false);
-    const introVisible = ref(false);
     const servicesVisible = ref(false);
     const testimonialsVisible = ref(false);
     const contactVisible = ref(false);
@@ -91,7 +142,8 @@ export default {
       {
         icon: 'fas fa-building',
         title: 'Corporate Training',
-        description: 'Custom training programs for organizations aiming to improve team dynamics and leadership skills.',
+        description:
+          'Custom training programs for organizations aiming to improve team dynamics and leadership skills.',
       },
     ]);
 
@@ -110,56 +162,67 @@ export default {
       },
     ]);
 
+    // Define the bookSession function to handle the button click
     const bookSession = () => {
-      // Implement booking session functionality
+      console.log("Redirecting to the booking page...");
+      // You can add navigation here or open a modal
+      // Example to redirect to booking page:
+      // this.$router.push('/booking');
     };
 
     const scrollToContent = () => {
-      const nextSection = document.querySelector('.introduction');
-      nextSection.scrollIntoView({ behavior: 'smooth' });
+      const nextSection = document.querySelector('.services');
+      if (nextSection) {
+        nextSection.scrollIntoView({ behavior: 'smooth' });
+      }
     };
 
     const handleScroll = () => {
       const scrollY = window.scrollY + window.innerHeight;
 
-      if (scrollY > document.querySelector('.hero').offsetTop) {
+      const heroSection = document.querySelector('.hero');
+      const servicesSection = document.querySelector('.services');
+      const testimonialsSection = document.querySelector('.testimonials');
+      const contactSection = document.querySelector('.contact');
+
+      if (heroSection && scrollY > heroSection.offsetTop) {
         heroVisible.value = true;
       }
-      if (scrollY > document.querySelector('.introduction').offsetTop + 100) {
-        introVisible.value = true;
-      }
-      if (scrollY > document.querySelector('.services').offsetTop + 100) {
+      if (servicesSection && scrollY > servicesSection.offsetTop + 100) {
         servicesVisible.value = true;
       }
-      if (scrollY > document.querySelector('.testimonials').offsetTop + 100) {
+      if (testimonialsSection && scrollY > testimonialsSection.offsetTop + 100) {
         testimonialsVisible.value = true;
       }
-      if (scrollY > document.querySelector('.contact').offsetTop + 100) {
+      if (contactSection && scrollY > contactSection.offsetTop + 100) {
         contactVisible.value = true;
       }
     };
 
     onMounted(() => {
       window.addEventListener('scroll', handleScroll);
-      handleScroll();
+      handleScroll(); // Initial check in case the user reloads halfway down
     });
 
     return {
       heroVisible,
-      introVisible,
       servicesVisible,
       testimonialsVisible,
       contactVisible,
       services,
       testimonials,
-      bookSession,
+      bookSession, // Make sure bookSession is returned here
       scrollToContent,
     };
   },
 };
 </script>
 
+
 <style scoped>
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap');
+
 /* Reset and General Styles */
 * {
   margin: 0;
@@ -168,29 +231,14 @@ export default {
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   color: #333;
   background-color: #f9f9f9;
 }
 
-.container {
-  width: 90%;
-  max-width: 1200px;
-  margin: auto;
-}
-
-.section-title {
-  font-size: 2.5rem;
-  margin-bottom: 1.5rem;
-  color: #6a0572;
-  text-align: center;
-}
-
-.section-text {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-  text-align: center;
-  color: #555;
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
 button {
@@ -199,67 +247,92 @@ button {
   outline: none;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
+/* Container */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* Section Titles */
+.section-title {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: #333;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
 }
 
 /* Hero Section */
 .hero {
   position: relative;
   height: 100vh;
-  background-image: linear-gradient(135deg, rgba(255, 204, 0, 0.7), rgba(106, 5, 114, 0.7)), url('@/assets/images/hero-background.jpg');
+  background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.6),
+      rgba(0, 0, 0, 0.6)
+    ),
+    url('@/assets/images/hero-background.jpg');
   background-size: cover;
   background-position: center;
-  color: white;
+  display: flex;
+  align-items: center;
+  color: #fff;
+}
+
+.hero-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .hero-content {
-  position: absolute;
-  top: 50%;
-  left: 10%;
-  transform: translateY(-50%);
-  max-width: 500px;
+  flex: 1;
 }
 
 .hero-title {
   font-size: 4rem;
   margin-bottom: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
 }
 
 .hero-subtitle {
   font-size: 1.5rem;
   margin-bottom: 2rem;
+  line-height: 1.5;
 }
 
 .hero-button {
   background-color: #ff6f61;
   color: #fff;
-  padding: 1rem 2.5rem;
+  padding: 1rem 2rem;
   border-radius: 50px;
   font-size: 1.2rem;
   transition: background-color 0.3s ease;
 }
 
 .hero-button:hover {
-  background-color: #e65c50;
+  background-color: #e65b50;
 }
 
 .hero-image-wrapper {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 50%;
-  height: 100%;
-  overflow: hidden;
+  flex: 1;
+  display: flex;
+  justify-content: center;
 }
 
 .hero-image {
-  width: 100%;
-  height: 100%;
+  border-radius: 50%;
+  width: 350px;
+  height: 350px;
   object-fit: cover;
+  border: 5px solid #fff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
+/* Scroll Indicator */
 .scroll-indicator {
   position: absolute;
   bottom: 2rem;
@@ -270,36 +343,29 @@ a {
 
 .scroll-indicator span {
   display: block;
-  width: 1rem;
-  height: 1rem;
-  border-bottom: 2px solid #fff;
-  border-right: 2px solid #fff;
+  width: 30px;
+  height: 30px;
+  border-bottom: 3px solid #fff;
+  border-right: 3px solid #fff;
   transform: rotate(45deg);
-  animation: bounce 2s infinite;
+  animation: scrollDown 2s infinite;
 }
 
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
+@keyframes scrollDown {
+  0% {
     transform: translateX(-50%) rotate(45deg) translateY(0);
+    opacity: 1;
   }
-  40% {
-    transform: translateX(-50%) rotate(45deg) translateY(-15px);
+  100% {
+    transform: translateX(-50%) rotate(45deg) translateY(15px);
+    opacity: 0;
   }
-  60% {
-    transform: translateX(-50%) rotate(45deg) translateY(-7px);
-  }
-}
-
-/* Introduction Section */
-.introduction {
-  padding: 5rem 0;
-  background-color: #fff;
 }
 
 /* Services Section */
 .services {
   padding: 5rem 0;
-  background-color: #f8f9fa;
+  background-color: #fff;
 }
 
 .services-grid {
@@ -310,39 +376,42 @@ a {
 }
 
 .service-card {
-  background-color: #fff;
+  background-color: #f9f9f9;
   padding: 2rem;
   border-radius: 15px;
-  width: 300px;
+  width: 350px;
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .service-card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
 .service-icon {
   font-size: 3rem;
-  color: #6a0572;
+  color: #ff6f61;
   margin-bottom: 1rem;
 }
 
 .service-title {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   margin-bottom: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .service-description {
   font-size: 1rem;
-  color: #777;
+  color: #555;
+  line-height: 1.6;
 }
 
 /* Testimonials Section */
 .testimonials {
   padding: 5rem 0;
-  background-color: #fff;
+  background-color: #f1f1f1;
 }
 
 .testimonials-slider {
@@ -354,19 +423,21 @@ a {
 }
 
 .testimonial-card {
-  background-color: #f8f9fa;
+  background-color: #fff;
   padding: 2rem;
   border-radius: 10px;
   min-width: 300px;
   flex: none;
   scroll-snap-align: start;
   text-align: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .testimonial-quote {
   font-size: 1.2rem;
   font-style: italic;
   margin-bottom: 1rem;
+  color: #333;
 }
 
 .testimonial-author {
@@ -378,14 +449,14 @@ a {
 /* Contact Section */
 .contact {
   padding: 5rem 0;
-  background-color: #6a0572;
+  background-color: #ff6f61;
   color: #fff;
   text-align: center;
 }
 
 .contact-button {
-  background-color: #ffcc00;
-  color: #6a0572;
+  background-color: #fff;
+  color: #ff6f61;
   padding: 1rem 2.5rem;
   border-radius: 50px;
   font-size: 1.2rem;
@@ -393,7 +464,7 @@ a {
 }
 
 .contact-button:hover {
-  background-color: #e6b800;
+  background-color: #f1f1f1;
 }
 
 /* Animations */
@@ -409,58 +480,307 @@ a {
   animation: slideLeft 1s forwards;
 }
 
-.animate-slide-right {
-  animation: slideRight 1s forwards;
-}
-
 .animate-zoom-in {
   animation: zoomIn 1s forwards;
 }
 
 @keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  0% { opacity: 0; transform: translateY(50px); }
-  100% { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideLeft {
-  0% { opacity: 0; transform: translateX(-50px); }
-  100% { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes slideRight {
-  0% { opacity: 0; transform: translateX(50px); }
-  100% { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes zoomIn {
-  0% { opacity: 0; transform: scale(0.8); }
-  100% { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
-/* Media Queries */
-@media (max-width: 768px) {
-  .hero-content {
-    left: 50%;
-    transform: translate(-50%, -50%);
+/* Responsive Design */
+@media (max-width: 992px) {
+  .hero-container {
+    flex-direction: column-reverse;
     text-align: center;
   }
 
+  .hero-content,
   .hero-image-wrapper {
-    display: none;
-  }
-
-  .service-card, .testimonial-card {
+    flex: none;
     width: 100%;
   }
 
-  .services-grid, .testimonials-slider {
+  .hero-image {
+    width: 250px;
+    height: 250px;
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .service-card {
+    width: 100%;
+  }
+
+  .testimonials-slider {
     flex-direction: column;
     align-items: center;
   }
 }
+
+
+/* Story Widget Styles */
+.story-widget {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  overflow-y: auto;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  animation: fadeIn 0.5s forwards;
+}
+
+.story-content {
+  background-color: #fff;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90%;
+  padding: 2rem;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  overflow-y: auto;
+  transform: translateY(100%);
+  animation: slideUp 0.5s forwards;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  font-weight: bold;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
+}
+
+.story-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: #333;
+}
+
+.story-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #555;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Modal Styles */
+.story-modal {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.story-modal-content {
+  background-color: #fff;
+  width: 100%;
+  max-width: 600px;
+  border-radius: 20px 20px 0 0;
+  padding: 2rem;
+  position: relative;
+  transform: translateY(100%);
+  animation: slideUp 0.4s ease-out forwards;
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.story-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.story-text {
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+
+/* Ensure the content doesn't scroll when the widget is open */
+body.no-scroll {
+  overflow: hidden;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .story-content {
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+  }
+}
+
+/* Story Widget Styles */
+.story-widget {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  overflow-y: auto;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  animation: fadeIn 0.5s forwards;
+}
+
+.story-content {
+  background-color: #fff;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90%;
+  padding: 2rem;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  overflow-y: auto;
+  transform: translateY(100%);
+  animation: slideUp 0.5s forwards;
+  position: relative;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  font-weight: bold;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
+}
+
+.story-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: #333;
+}
+
+.story-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #555;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .story-content {
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+  }
+}
 </style>
+
+
+
