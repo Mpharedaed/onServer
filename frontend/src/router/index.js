@@ -1,4 +1,3 @@
-// src/router/index.js
 import Vue from 'vue';
 import Router from 'vue-router';
 import HomePage from '@/views/HomePage.vue';
@@ -7,7 +6,7 @@ import LoginForm from '@/components/LoginForm.vue';
 import SignupForm from '@/components/SignupForm.vue';
 import UserDashboard from '@/components/UserDashboard.vue';
 import CreatePost from '@/components/CreatePost.vue';
-import UserProfile from '@/components/UserProfile.vue';
+import UserProfile from '@/components/UserProfile/UserProfile.vue';
 import PotentialFriends from '@/components/PotentialFriends.vue';
 import ResetPasswordRequest from '@/components/ResetPasswordRequest.vue';
 import ResetPassword from '@/components/ResetPassword.vue';

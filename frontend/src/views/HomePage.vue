@@ -2,13 +2,20 @@
   <div id="home">
     <!-- Hero Section -->
     <section class="hero">
+      <div class="hero-background">
+        <!-- Parallax Background Layers -->
+        <div class="parallax-layer layer-1"></div>
+        <div class="parallax-layer layer-2"></div>
+        <div class="parallax-layer layer-3"></div>
+        <!-- Overlay for gradient or color tint -->
+        <div class="background-overlay"></div>
+      </div>
       <div class="container hero-container">
         <div class="hero-content">
-          <h1 class="hero-title">Dawlat Emad</h1>
+          <h1 class="hero-title">Discover Your True Potential</h1>
           <p class="hero-subtitle">
-            Your Journey to Self-Discovery and Success Starts Here
+            Join me, Dawlat Emad, on a transformative journey towards self-discovery and personal growth.
           </p>
-          <!-- Changed @click event to openStory -->
           <button class="hero-button" @click="openStory">My Story</button>
         </div>
         <div class="hero-image-wrapper">
@@ -24,150 +31,46 @@
       </div>
     </section>
 
-    <!-- Added Story Widget -->
-    <div
-      class="story-widget"
-      v-if="showStory"
-      @click.self="closeStory"
-    >
-      <div class="story-content">
+    <!-- Story Modal -->
+    <div v-if="showStory" class="story-widget" @click.self="closeStory">
+      <div class="story-content rtl">
         <button class="close-button" @click="closeStory">&times;</button>
         <h2 class="story-title">About Dawlat Emad</h2>
         <p class="story-text">
-          <!-- Replace this text with Dawlat's actual story -->
-          Dawlat Emad is a passionate life coach dedicated to helping individuals discover their true potential and achieve their dreams. With years of experience in personal development, Dawlat provides insightful guidance and support to empower others on their journey to self-improvement.
+          دولت عماد هي كوتش حياة شغوفة، مخصصة إنها تساعد الناس يكتشفوا إمكانياتهم الحقيقية ويحققوا أحلامهم. بأسلوب بسيط وجميل بيجمع بين التعاطف والخبرة، دولت بتمكن عملاءها من تجاوز التحديات واكتشاف قوتهم الداخلية.
         </p>
+        <h3 class="story-subheading">تخصصات دولت تشمل:</h3>
+        <ul class="story-list">
+          <li><strong>بناء الثقة:</strong> بتساعد السيدات يستعيدوا قوتهم وصوتهم في الحياة الشخصية والمهنية.</li>
+          <li><strong>الكوتشينج المهني:</strong> بترشد الأفراد في تحديد أهدافهم المهنية وتوجيه حياتهم العملية ناحية شغفهم.</li>
+          <li><strong>الصحة النفسية:</strong> بتدعم عملاءها في إدارة التوتر والقلق وتعدي المراحل الصعبة في حياتهم بأساليب مخصصة للمرونة النفسية.</li>
+          <li><strong>تطوير القيادة:</strong> بتمكن السيدات والقادة الجدد إنهم يمسكوا مناصب قيادية بشجاعة وثقة.</li>
+        </ul>
+        <p class="story-text">
+          دولت معروفة بأسلوبها الدافئ والداعم. بتقدم مش بس أدوات عملية، لكن كمان بتدي الدعم النفسي اللي عملاءها بيحتاجوه عشان يحققوا النجاح.
+        </p>
+        <!-- Call-to-action button -->
+        <a href="#contact" class="story-button">ابدأ رحلتك الآن</a>
       </div>
     </div>
-    <!-- Services Section -->
-    <section class="services">
-      <div class="container">
-        <h2
-          class="section-title"
-          :class="{ 'animate-slide-up': servicesVisible }"
-        >
-          Services I Offer
-        </h2>
-        <div class="services-grid">
-          <div
-            class="service-card"
-            v-for="(service, index) in services"
-            :key="index"
-            :class="{ 'animate-fade-in': servicesVisible }"
-          >
-            <i :class="service.icon + ' service-icon'"></i>
-            <h3 class="service-title">{{ service.title }}</h3>
-            <p class="service-description">{{ service.description }}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section class="testimonials">
-      <div class="container">
-        <h2
-          class="section-title"
-          :class="{ 'animate-slide-left': testimonialsVisible }"
-        >
-          What My Clients Say
-        </h2>
-        <div
-          class="testimonials-slider"
-          :class="{ 'animate-fade-in': testimonialsVisible }"
-        >
-          <div
-            class="testimonial-card"
-            v-for="(testimonial, index) in testimonials"
-            :key="index"
-          >
-            <p class="testimonial-quote">"{{ testimonial.quote }}"</p>
-            <h4 class="testimonial-author">- {{ testimonial.author }}</h4>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="contact">
-      <div class="container">
-        <h2
-          class="section-title"
-          :class="{ 'animate-slide-up': contactVisible }"
-        >
-          Get in Touch
-        </h2>
-        <p
-          class="section-text"
-          :class="{ 'animate-fade-in': contactVisible }"
-        >
-          Ready to take the next step? Let's connect and start your journey.
-        </p>
-        <button
-          class="contact-button"
-          @click="bookSession"
-          :class="{ 'animate-zoom-in': contactVisible }"
-        >
-          Book a Session
-        </button>
-      </div>
-    </section>
   </div>
 </template>
-
-
 <script>
 import { ref, onMounted } from 'vue';
 
 export default {
   name: 'HomePage',
   setup() {
-    // Reactive references for visibility states
-    const heroVisible = ref(false);
-    const servicesVisible = ref(false);
-    const testimonialsVisible = ref(false);
-    const contactVisible = ref(false);
+    const showStory = ref(false);
 
-    const services = ref([
-      {
-        icon: 'fas fa-user-circle',
-        title: 'Personal Coaching',
-        description: 'One-on-one sessions tailored to your unique needs and goals.',
-      },
-      {
-        icon: 'fas fa-users',
-        title: 'Group Workshops',
-        description: 'Engaging group sessions to foster community and shared learning.',
-      },
-      {
-        icon: 'fas fa-building',
-        title: 'Corporate Training',
-        description:
-          'Custom training programs for organizations aiming to improve team dynamics and leadership skills.',
-      },
-    ]);
+    const openStory = () => {
+      showStory.value = true;
+      document.body.style.overflow = 'hidden';
+    };
 
-    const testimonials = ref([
-      {
-        quote: 'Dawlat helped me find clarity and purpose in my life.',
-        author: 'Aya',
-      },
-      {
-        quote: "The best investment I've made in myself. Highly recommend!",
-        author: 'John Doe',
-      },
-      {
-        quote: 'Her guidance has been transformative in both my personal and professional life.',
-        author: 'Jane Smith',
-      },
-    ]);
-
-    // Define the bookSession function to handle the button click
-    const bookSession = () => {
-      console.log("Redirecting to the booking page...");
-      // You can add navigation here or open a modal
-      // Example to redirect to booking page:
-      // this.$router.push('/booking');
+    const closeStory = () => {
+      showStory.value = false;
+      document.body.style.overflow = 'auto';
     };
 
     const scrollToContent = () => {
@@ -177,51 +80,36 @@ export default {
       }
     };
 
-    const handleScroll = () => {
-      const scrollY = window.scrollY + window.innerHeight;
+    // Parallax Effect
 
-      const heroSection = document.querySelector('.hero');
-      const servicesSection = document.querySelector('.services');
-      const testimonialsSection = document.querySelector('.testimonials');
-      const contactSection = document.querySelector('.contact');
+const handleParallax = () => {
+  const layers = document.querySelectorAll('.parallax-layer');
+  window.addEventListener('scroll', () => {
+    const scrollPosition = window.pageYOffset;
+    layers.forEach((layer) => { // Remove 'index' as it's unused
+      const speed = layer.getAttribute('data-speed');
+      layer.style.transform = `translateY(${scrollPosition * speed}px)`;
+    });
+  });
+};
 
-      if (heroSection && scrollY > heroSection.offsetTop) {
-        heroVisible.value = true;
-      }
-      if (servicesSection && scrollY > servicesSection.offsetTop + 100) {
-        servicesVisible.value = true;
-      }
-      if (testimonialsSection && scrollY > testimonialsSection.offsetTop + 100) {
-        testimonialsVisible.value = true;
-      }
-      if (contactSection && scrollY > contactSection.offsetTop + 100) {
-        contactVisible.value = true;
-      }
-    };
 
     onMounted(() => {
-      window.addEventListener('scroll', handleScroll);
-      handleScroll(); // Initial check in case the user reloads halfway down
+      handleParallax();
     });
 
     return {
-      heroVisible,
-      servicesVisible,
-      testimonialsVisible,
-      contactVisible,
-      services,
-      testimonials,
-      bookSession, // Make sure bookSession is returned here
+      showStory,
+      openStory,
+      closeStory,
       scrollToContent,
     };
   },
 };
 </script>
-
-
 <style scoped>
 /* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Cairo:wght@400;600;700&display=swap');
 
 /* Reset and General Styles */
 * {
@@ -232,8 +120,8 @@ export default {
 
 body {
   font-family: 'Open Sans', sans-serif;
-  color: #333;
   background-color: #f9f9f9;
+  overflow-x: hidden;
 }
 
 a {
@@ -247,92 +135,144 @@ button {
   outline: none;
 }
 
-/* Container */
-.container {
-  width: 90%;
-  max-width: 1200px;
-  margin: auto;
-}
-
-/* Section Titles */
-.section-title {
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-  color: #333;
-  text-align: center;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
-}
-
 /* Hero Section */
 .hero {
   position: relative;
   height: 100vh;
-  background-image: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.6),
-      rgba(0, 0, 0, 0.6)
-    ),
-    url('@/assets/images/hero-background.jpg');
+  color: #fff;
+  overflow: hidden;
+  perspective: 1px;
+  transform-style: preserve-3d;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.parallax-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background-size: cover;
   background-position: center;
-  display: flex;
-  align-items: center;
-  color: #fff;
+}
+
+
+.layer-2 {
+  background-image: url('@/assets/images/layer2.png');
+  z-index: 2;
+  opacity: 0.5;
+  data-speed: 0.4;
+}
+
+.layer-3 {
+  background-image: url('@/assets/images/layer2video.mp4 ');
+  z-index: 3;
+  opacity: 0.3;
+  data-speed: 0.6;
+}
+
+
+
+
+
+.background-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(0, 0, 0, 0.6),
+    rgba(0, 0, 0, 0.3)
+  );
+  z-index: 4;
 }
 
 .hero-container {
+  position: relative;
+  z-index: 5;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 100%;
+  padding: 0 5%;
 }
 
 .hero-content {
   flex: 1;
+  animation: fadeInLeft 1s forwards;
 }
 
 .hero-title {
-  font-size: 4rem;
+  font-size: 3.5rem;
   margin-bottom: 1rem;
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
+  text-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .hero-subtitle {
   font-size: 1.5rem;
   margin-bottom: 2rem;
   line-height: 1.5;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .hero-button {
-  background-color: #ff6f61;
+  background-color: rgba(255, 255, 255, 0.2);
   color: #fff;
   padding: 1rem 2rem;
   border-radius: 50px;
   font-size: 1.2rem;
   transition: background-color 0.3s ease;
+  border: 1px solid #fff;
+  backdrop-filter: blur(5px);
 }
 
 .hero-button:hover {
-  background-color: #e65b50;
+  background-color: rgba(255, 255, 255, 0.4);
 }
 
 .hero-image-wrapper {
   flex: 1;
   display: flex;
   justify-content: center;
+  align-items: center;
+  animation: fadeInRight 1s forwards;
+  position: relative;
 }
 
 .hero-image {
   border-radius: 50%;
-  width: 350px;
-  height: 350px;
+  width: 400px;
+  height: 400px;
   object-fit: cover;
-  border: 5px solid #fff;
+  border: 5px solid rgba(255, 255, 255, 0.5);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
 }
 
-/* Scroll Indicator */
+.hero-image::after {
+  content: '';
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+}
+
 .scroll-indicator {
   position: absolute;
   bottom: 2rem;
@@ -351,6 +291,163 @@ button {
   animation: scrollDown 2s infinite;
 }
 
+/* Story Widget Styles */
+.story-widget {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(10px);
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.6s forwards;
+}
+
+.story-content {
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.7);
+  width: 90%;
+  max-width: 800px;
+  padding: 2rem 3rem;
+  border-radius: 20px;
+  position: relative;
+  overflow-y: auto;
+  animation: zoomIn 0.5s forwards;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.close-button {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #555;
+  cursor: pointer;
+  z-index: 1100; /* Ensure it's on top of the modal content */
+  padding: 10px; /* Increase clickable area */
+  transition: color 0.3s ease;
+}
+
+.close-button:hover {
+  color: #ff6f61;
+}
+
+@media (max-width: 768px) {
+  .close-button {
+    top: 1rem;
+    right: 1rem; /* Adjust the position for small screens */
+    font-size: 1.8rem;
+    padding: 15px; /* Larger tap area for better mobile experience */
+  }
+}
+
+.story-title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  color: #333;
+  position: relative;
+}
+
+.story-title::after {
+  content: '';
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #ff6f61, #e65b50);
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  border-radius: 2px;
+}
+
+.story-text {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #555;
+  margin-bottom: 2rem;
+  font-family: 'Cairo', sans-serif;
+}
+
+.story-subheading {
+  font-size: 1.8rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #333;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 600;
+}
+
+.story-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 2rem;
+}
+
+.story-list li {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  margin-bottom: 1rem;
+  position: relative;
+  padding-left: 1.5rem;
+  font-family: 'Cairo', sans-serif;
+}
+
+.story-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #ff6f61;
+  font-size: 1.5rem;
+}
+
+.story-button {
+  background-color: #ff6f61;
+  color: #fff;
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.story-button:hover {
+  background-color: #e65b50;
+}
+
+.rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+.rtl .close-button {
+  left: 1.5rem;
+  right: unset;
+}
+
+.rtl .story-title::after {
+  left: unset;
+  right: 0;
+}
+
+.rtl .story-list li {
+  padding-left: 0;
+  padding-right: 1.5rem;
+}
+
+.rtl .story-list li::before {
+  left: unset;
+  right: 0;
+}
+
+/* Animations */
 @keyframes scrollDown {
   0% {
     transform: translateX(-50%) rotate(45deg) translateY(0);
@@ -362,149 +459,7 @@ button {
   }
 }
 
-/* Services Section */
-.services {
-  padding: 5rem 0;
-  background-color: #fff;
-}
-
-.services-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  justify-content: center;
-}
-
-.service-card {
-  background-color: #f9f9f9;
-  padding: 2rem;
-  border-radius: 15px;
-  width: 350px;
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.service-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-}
-
-.service-icon {
-  font-size: 3rem;
-  color: #ff6f61;
-  margin-bottom: 1rem;
-}
-
-.service-title {
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 600;
-}
-
-.service-description {
-  font-size: 1rem;
-  color: #555;
-  line-height: 1.6;
-}
-
-/* Testimonials Section */
-.testimonials {
-  padding: 5rem 0;
-  background-color: #f1f1f1;
-}
-
-.testimonials-slider {
-  display: flex;
-  gap: 2rem;
-  overflow-x: auto;
-  padding-bottom: 1rem;
-  scroll-snap-type: x mandatory;
-}
-
-.testimonial-card {
-  background-color: #fff;
-  padding: 2rem;
-  border-radius: 10px;
-  min-width: 300px;
-  flex: none;
-  scroll-snap-align: start;
-  text-align: center;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.testimonial-quote {
-  font-size: 1.2rem;
-  font-style: italic;
-  margin-bottom: 1rem;
-  color: #333;
-}
-
-.testimonial-author {
-  font-size: 1rem;
-  font-weight: bold;
-  color: #ff6f61;
-}
-
-/* Contact Section */
-.contact {
-  padding: 5rem 0;
-  background-color: #ff6f61;
-  color: #fff;
-  text-align: center;
-}
-
-.contact-button {
-  background-color: #fff;
-  color: #ff6f61;
-  padding: 1rem 2.5rem;
-  border-radius: 50px;
-  font-size: 1.2rem;
-  transition: background-color 0.3s ease;
-}
-
-.contact-button:hover {
-  background-color: #f1f1f1;
-}
-
-/* Animations */
-.animate-fade-in {
-  animation: fadeIn 1s forwards;
-}
-
-.animate-slide-up {
-  animation: slideUp 1s forwards;
-}
-
-.animate-slide-left {
-  animation: slideLeft 1s forwards;
-}
-
-.animate-zoom-in {
-  animation: zoomIn 1s forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideLeft {
+@keyframes fadeInLeft {
   from {
     opacity: 0;
     transform: translateX(-50px);
@@ -515,10 +470,41 @@ button {
   }
 }
 
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @keyframes zoomIn {
   from {
     opacity: 0;
-    transform: scale(0.8);
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
@@ -529,258 +515,65 @@ button {
 /* Responsive Design */
 @media (max-width: 992px) {
   .hero-container {
-    flex-direction: column-reverse;
+    flex-direction: column;
+    padding: 0 2rem;
     text-align: center;
   }
 
-  .hero-content,
+  .hero-content {
+    animation: fadeInUp 1s forwards;
+    order: 2;
+  }
+
   .hero-image-wrapper {
-    flex: none;
-    width: 100%;
+    margin-bottom: 2rem;
+    animation: fadeInUp 1s forwards;
+    order: 1;
+  }
+
+  .hero-title {
+    font-size: 3rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.2rem;
+  }
+
+  .hero-image {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
   }
 
   .hero-image {
     width: 250px;
     height: 250px;
-    margin-bottom: 2rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .service-card {
-    width: 100%;
   }
 
-  .testimonials-slider {
-    flex-direction: column;
-    align-items: center;
-  }
-}
-
-
-/* Story Widget Styles */
-.story-widget {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  overflow-y: auto;
-  z-index: 1000;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  opacity: 0;
-  animation: fadeIn 0.5s forwards;
-}
-
-.story-content {
-  background-color: #fff;
-  width: 100%;
-  max-width: 600px;
-  max-height: 90%;
-  padding: 2rem;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  overflow-y: auto;
-  transform: translateY(100%);
-  animation: slideUp 0.5s forwards;
-}
-
-.close-button {
-  background: none;
-  border: none;
-  font-size: 2rem;
-  font-weight: bold;
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  cursor: pointer;
-}
-
-.story-title {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
-  color: #333;
-}
-
-.story-text {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #555;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  to {
-    transform: translateY(0);
-  }
-}
-
-/* Modal Styles */
-.story-modal {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  animation: fadeIn 0.3s ease-out forwards;
-}
-
-.story-modal-content {
-  background-color: #fff;
-  width: 100%;
-  max-width: 600px;
-  border-radius: 20px 20px 0 0;
-  padding: 2rem;
-  position: relative;
-  transform: translateY(100%);
-  animation: slideUp 0.4s ease-out forwards;
-}
-
-.close-button {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  font-size: 2rem;
-  cursor: pointer;
-}
-
-.story-title {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
-
-.story-text {
-  font-size: 1.2rem;
-  line-height: 1.6;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
-
-/* Ensure the content doesn't scroll when the widget is open */
-body.no-scroll {
-  overflow: hidden;
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
   .story-content {
-    width: 100%;
-    border-radius: 20px 20px 0 0;
+    padding: 1.5rem 1.5rem;
   }
-}
 
-/* Story Widget Styles */
-.story-widget {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  overflow-y: auto;
-  z-index: 1000;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  opacity: 0;
-  animation: fadeIn 0.5s forwards;
-}
-
-.story-content {
-  background-color: #fff;
-  width: 100%;
-  max-width: 600px;
-  max-height: 90%;
-  padding: 2rem;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  overflow-y: auto;
-  transform: translateY(100%);
-  animation: slideUp 0.5s forwards;
-  position: relative;
-}
-
-.close-button {
-  background: none;
-  border: none;
-  font-size: 2rem;
-  font-weight: bold;
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  cursor: pointer;
-}
-
-.story-title {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
-  color: #333;
-}
-
-.story-text {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #555;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  to {
-    opacity: 1;
+  .close-button {
+    top: 1rem;
+    left: 1rem;
   }
-}
 
-@keyframes slideUp {
-  to {
-    transform: translateY(0);
+  .story-title {
+    font-size: 2rem;
   }
-}
 
-/* Responsive Styles */
-@media (max-width: 768px) {
-  .story-content {
-    width: 100%;
-    border-radius: 20px 20px 0 0;
+  .story-text {
+    font-size: 1rem;
   }
 }
 </style>
-
-
-
