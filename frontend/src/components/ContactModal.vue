@@ -7,15 +7,32 @@
         <form @submit.prevent="submitForm">
           <div class="form-group">
             <label for="name">Your Name</label>
-            <input type="text" id="name" v-model="formData.name" required />
+            <input
+              type="text"
+              id="name"
+              v-model="formData.name"
+              required
+              class="form-input"
+            />
           </div>
           <div class="form-group">
             <label for="email">Your Email</label>
-            <input type="email" id="email" v-model="formData.email" required />
+            <input
+              type="email"
+              id="email"
+              v-model="formData.email"
+              required
+              class="form-input"
+            />
           </div>
           <div class="form-group">
             <label for="message">Your Message</label>
-            <textarea id="message" v-model="formData.message" required></textarea>
+            <textarea
+              id="message"
+              v-model="formData.message"
+              required
+              class="form-input"
+            ></textarea>
           </div>
           <button type="submit" class="submit-button">Send Message</button>
         </form>
@@ -44,16 +61,16 @@ export default {
       document.body.style.overflow = 'auto';
     },
     submitForm() {
-      // Here you can handle form submission logic, e.g., sending data to your backend
       console.log(this.formData);
       alert('Message sent!');
-      this.closeModal(); // Close modal after submission
+      this.closeModal();
     },
   },
 };
 </script>
 
 <style scoped>
+/* General Styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -115,7 +132,7 @@ textarea {
   padding: 0.75rem;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 1rem;
+  font-size: 1rem; /* Prevent mobile zoom-in */
 }
 
 textarea {
@@ -126,15 +143,105 @@ textarea {
 .submit-button {
   background-color: #ff6f61;
   color: #fff;
-  padding: 0.75rem 1.5rem;
+  padding: 1rem 2rem;
   border: none;
   border-radius: 50px;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  width: 100%; /* Full-width button for mobile */
+  max-width: 400px;
+  margin: 0 auto; /* Center the button */
+  display: block;
 }
 
 .submit-button:hover {
   background-color: #e65b50;
 }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 1.5rem;
+    max-width: 90%;
+  }
+
+  .modal-title {
+    font-size: 1.8rem;
+  }
+
+  input,
+  textarea {
+    font-size: 1rem; /* Prevent zoom on mobile */
+  }
+
+  .submit-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    padding: 1rem;
+    max-width: 95%;
+  }
+
+  .modal-title {
+    font-size: 1.6rem;
+  }
+
+  input,
+  textarea {
+    font-size: 1rem; /* Ensure no zoom on mobile */
+  }
+
+  .submit-button {
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+  }
+}
+
+/* Styles for Video Background */
+.hero {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.hero video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  filter: brightness(50%);
+}
+
+@media (max-width: 768px) {
+  .hero video {
+    object-fit: contain;
+  }
+}
+
 </style>
+
+<!-- HTML for the Background Video Section -->
+
+<section class="hero">
+  <video autoplay muted loop playsinline>
+    <!-- Multiple sources for browser compatibility -->
+    <source src="@/assets/video/background.mp4" type="video/mp4" />
+    <source src="@/assets/video/background.webm" type="video/webm" />
+    <source src="@/assets/video/background.ogv" type="video/ogg" />
+    <!-- Fallback image if video doesn't load -->
+    <img
+      src="@/assets/images/fallback-image.jpg"
+      alt="Background Fallback"
+      class="fallback-image"
+    />
+    Your browser does not support the video tag.
+  </video>
+</section>
