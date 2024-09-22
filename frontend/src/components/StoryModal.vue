@@ -459,7 +459,8 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(30, 30, 30, 0.9);
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -469,14 +470,15 @@ export default {
 /* Story and Questionnaire Content */
 .story-content,
 .questionnaire-content {
-  background: #fff;
+  backdrop-filter: blur(30px);
+  background: rgba(255, 255, 255, 0.7);
   width: 90%;
-  max-width: 800px;
-  padding: 2rem 3rem;
+  max-width: 600px;
+  padding: 2rem;
   border-radius: 20px;
   position: relative;
   animation: fadeInUp 0.5s ease-in-out;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   max-height: 90vh;
   overflow-y: auto;
 }
@@ -485,7 +487,7 @@ export default {
 .close-button {
   position: absolute;
   top: 1rem;
-  left: 1rem;
+  right: 1rem;
   background: none;
   border: none;
   font-size: 2rem;
@@ -501,37 +503,38 @@ export default {
 /* Progress Bar */
 .progress-bar {
   width: 100%;
-  background-color: #e0e0e0;
-  height: 10px;
-  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.2);
+  height: 4px;
+  border-radius: 2px;
   margin-bottom: 1rem;
   overflow: hidden;
 }
 .progress {
   height: 100%;
-  background-color: #ff6f61;
+  background-color: #007aff; /* Apple blue */
   transition: width 0.3s ease;
 }
 
 /* Titles */
 .story-title,
 .question-title {
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   margin-bottom: 1rem;
-  font-family: 'Cairo', sans-serif;
-  font-weight: 700;
-  color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-weight: 600;
+  color: #000;
   text-align: center;
 }
 
 /* Text */
 .story-text,
 .question-body p {
-  font-size: 1.2rem;
-  line-height: 1.8;
-  color: #555;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #000;
   margin-bottom: 1.5rem;
-  font-family: 'Cairo', sans-serif;
+  font-family: inherit;
   text-align: center;
 }
 
@@ -541,30 +544,29 @@ export default {
   padding: 0;
   margin-bottom: 2rem;
 }
-
 .story-list li {
-  font-size: 1.2rem;
-  line-height: 1.8;
+  font-size: 1rem;
+  line-height: 1.6;
   margin-bottom: 1rem;
   position: relative;
   padding-right: 1.5rem;
-  font-family: 'Cairo', sans-serif;
-  color: #333;
+  font-family: inherit;
+  color: #000;
 }
 .story-list li::before {
-  content: '✔';
+  content: '•';
   position: absolute;
   right: 0;
-  color: #ff6f61;
-  font-size: 1.5rem;
+  color: #007aff; /* Apple blue */
+  font-size: 1.2rem;
 }
 
 /* Story Button */
 .story-button {
-  background-color: #ff6f61;
+  background-color: #007aff;
   color: #fff;
-  padding: 0.8rem 2rem;
-  border-radius: 30px;
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
   font-size: 1rem;
   transition: background-color 0.3s ease;
   text-decoration: none;
@@ -572,9 +574,10 @@ export default {
   cursor: pointer;
   margin: 0 auto;
   display: block;
+  border: none;
 }
 .story-button:hover {
-  background-color: #e65b50;
+  background-color: #005bb5;
 }
 
 /* Questionnaire Styles */
@@ -586,40 +589,40 @@ export default {
   width: 100%;
   max-width: 400px;
 }
-
 .option-item input[type='radio'],
 .checkbox-option input[type='checkbox'] {
-  accent-color: #ff6f61;
+  accent-color: #007aff;
   margin-left: 1rem;
   transform: scale(1.2);
 }
-
 .option-item label,
 .checkbox-option label {
-  font-size: 1.2rem;
-  color: #333;
-  font-family: 'Cairo', sans-serif;
+  font-size: 1rem;
+  color: #000;
+  font-family: inherit;
   flex: 1;
   text-align: right;
 }
 
+/* Text Input */
 .text-input,
 .date-input {
   width: 100%;
   max-width: 400px;
   padding: 0.7rem 1rem;
   font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 30px;
+  border: 1px solid rgba(60, 60, 67, 0.15);
+  border-radius: 12px;
   outline: none;
   text-align: center;
   margin: 0 auto 1rem;
   display: block;
+  background: rgba(255, 255, 255, 0.7);
 }
 
 /* Feedback Message */
 .feedback-message {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: #28a745;
   margin-top: 1rem;
   text-align: center;
@@ -632,15 +635,14 @@ export default {
   justify-content: space-between;
   margin-top: 1.5rem;
 }
-
 .prev-button,
 .next-button,
 .submit-button {
-  background-color: #ff6f61;
+  background-color: #007aff;
   color: #fff;
   padding: 0.7rem 1.5rem;
   border: none;
-  border-radius: 30px;
+  border-radius: 12px;
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -648,12 +650,12 @@ export default {
 .prev-button:hover,
 .next-button:hover,
 .submit-button:hover {
-  background-color: #e65b50;
+  background-color: #005bb5;
 }
 .prev-button:disabled,
 .next-button:disabled,
 .submit-button:disabled {
-  background-color: #ccc;
+  background-color: rgba(60, 60, 67, 0.3);
   cursor: not-allowed;
 }
 
@@ -668,7 +670,6 @@ export default {
     transform: translateZ(0);
   }
 }
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -677,7 +678,6 @@ export default {
     opacity: 1;
   }
 }
-
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s ease;
@@ -686,7 +686,6 @@ export default {
 .fade-leave-to {
   opacity: 0;
 }
-
 .slide-enter-active,
 .slide-leave-active {
   transition: all 0.5s ease;
@@ -708,12 +707,12 @@ export default {
 
   .story-title,
   .question-title {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 
   .option-item label,
   .checkbox-option label {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .text-input,
@@ -736,12 +735,12 @@ export default {
 @media (max-width: 480px) {
   .story-title,
   .question-title {
-    font-size: 1.8rem;
+    font-size: 1.2rem;
   }
 
   .option-item label,
   .checkbox-option label {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 
   .text-input,
