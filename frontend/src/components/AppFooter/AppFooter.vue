@@ -34,7 +34,7 @@ export default {
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
 
 .footer {
-  background: linear-gradient(135deg, #4a4ae1, #6c63ff);
+  background: linear-gradient(135deg, #4a4ae1, #6c63ff); /* Updated gradient */
   color: white;
   padding: 40px 0 20px;
   text-align: center;
@@ -61,6 +61,7 @@ export default {
   font-weight: 700;
   margin: 0;
   font-size: 24px;
+  letter-spacing: 1px;
 }
 
 .footer-navigation ul {
@@ -76,6 +77,7 @@ export default {
   text-decoration: none;
   font-family: 'Roboto', sans-serif;
   font-weight: 500;
+  font-size: 16px;
   transition: color 0.3s ease;
 }
 
@@ -99,8 +101,11 @@ export default {
   margin: 0;
   font-size: 14px;
   font-family: 'Roboto', sans-serif;
+  color: #e0e0e0;
+  opacity: 0.8;
 }
 
+/* Responsive Styles */
 @media (max-width: 768px) {
   .footer-content {
     flex-direction: column;
@@ -109,6 +114,10 @@ export default {
   .footer-navigation ul {
     flex-direction: column;
     gap: 10px;
+  }
+
+  .social-media {
+    margin-top: 10px;
   }
 }
 </style>
