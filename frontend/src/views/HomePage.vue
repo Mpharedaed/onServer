@@ -1,5 +1,15 @@
 <template>
   <div id="home">
+    <!-- Navigation Dots -->
+    <div class="navigation-dots">
+      <span
+        v-for="(section, index) in sections"
+        :key="index"
+        :class="{ active: currentSectionIndex === index }"
+        @click="scrollToSection(index)"
+      ></span>
+    </div>
+
     <!-- Transition Wrapper -->
     <transition
       :name="transitionName"
@@ -104,6 +114,25 @@
           </div>
         </div>
 
+        <div class="scroll-indicator" @click="scrollToSection(2)">
+          <span></span>
+        </div>
+      </section>
+
+      <!-- Contact Section -->
+      <section
+        v-else-if="currentSectionIndex === 2"
+        class="contact section"
+        key="contact"
+      >
+        <div class="container">
+          <h2 class="section-title">Get in Touch</h2>
+          <p class="section-description">
+            I'm here to help you on your journey. Feel free to reach out.
+          </p>
+          <!-- Contact form or information -->
+          <!-- ... (Your contact content) ... -->
+        </div>
         <div class="scroll-indicator" @click="scrollToSection(0)">
           <span></span>
         </div>
@@ -115,6 +144,7 @@
     <ContactModal :showContact="showContact" @close="closeContact" />
   </div>
 </template>
+
 
 <script>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
@@ -134,8 +164,8 @@ export default {
     const transitionName = ref('slide-up');
     const isAnimating = ref(false);
     let touchStartY = 0;
-
-    const sectionsCount = 2; // Update this if you add more sections
+    let lastScrollTime = 0;
+    const sections = ref(['hero', 'services', 'contact']);
 
     // Open and Close Modals
     const openStory = () => {
@@ -163,7 +193,7 @@ export default {
       if (
         isAnimating.value ||
         index < 0 ||
-        index >= sectionsCount ||
+        index >= sections.value.length ||
         index === currentSectionIndex.value
       ) {
         return;
@@ -174,11 +204,13 @@ export default {
       currentSectionIndex.value = index;
     };
 
-    // Wheel Event Handler
+    // Wheel Event Handler with Throttle
     const handleWheel = (event) => {
       event.preventDefault();
-      if (isAnimating.value) return;
+      const now = Date.now();
+      if (isAnimating.value || now - lastScrollTime < 800) return;
 
+      lastScrollTime = now;
       const delta = event.deltaY;
       if (delta > 0) {
         scrollToSection(currentSectionIndex.value + 1);
@@ -187,7 +219,7 @@ export default {
       }
     };
 
-    // Touch Event Handlers
+    // Touch Event Handlers with Throttle
     const handleTouchStart = (event) => {
       touchStartY = event.touches[0].clientY;
     };
@@ -196,7 +228,10 @@ export default {
       const touchEndY = event.changedTouches[0].clientY;
       const touchDelta = touchStartY - touchEndY;
 
-      if (isAnimating.value) return;
+      const now = Date.now();
+      if (isAnimating.value || now - lastScrollTime < 800) return;
+
+      lastScrollTime = now;
 
       if (touchDelta > 50) {
         scrollToSection(currentSectionIndex.value + 1);
@@ -241,10 +276,12 @@ export default {
       transitionName,
       beforeEnter,
       afterEnter,
+      sections,
     };
   },
 };
 </script>
+
 
 <style scoped>
 /* Import Google Fonts */
@@ -633,4 +670,138 @@ body {
     flex: 0 1 100%;
   }
 }
+
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+/* Reset and General Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  overflow: hidden; /* Prevent default scrolling */
+}
+
+#home {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Sections */
+.section {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Transition Styles */
+.slide-up-enter-active,
+.slide-up-leave-active,
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition: transform 0.8s ease, opacity 0.8s ease;
+}
+
+.slide-up-enter-from,
+.slide-up-leave-to {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.slide-up-enter-to,
+.slide-up-leave-from {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.slide-down-enter-from,
+.slide-down-leave-to {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.slide-down-enter-to,
+.slide-down-leave-from {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Navigation Dots */
+.navigation-dots {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.navigation-dots span {
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.5);
+  margin: 10px 0;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.navigation-dots span.active {
+  background: #fff;
+}
+
+/* Hero Section */
+/* ... (Your existing hero styles) ... */
+
+/* Services Section */
+/* ... (Your existing services styles) ... */
+
+/* Contact Section */
+.contact {
+  background-color: #f0f0f0;
+  /* Your contact section styles */
+}
+
+/* Scroll Indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+
+.scroll-indicator span {
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-bottom: 3px solid #fff;
+  border-right: 3px solid #fff;
+  transform: rotate(45deg);
+  animation: scrollDown 2s infinite;
+}
+
+@keyframes scrollDown {
+  0% {
+    transform: translateX(-50%) rotate(45deg) translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) rotate(45deg) translateY(15px);
+    opacity: 0;
+  }
+}
+
+/* Responsive Adjustments */
+/* ... (Your existing responsive styles) ... */
 </style>
+
+
