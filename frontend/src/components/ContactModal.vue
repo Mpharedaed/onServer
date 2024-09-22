@@ -70,30 +70,35 @@ export default {
 </script>
 
 <style scoped>
-/* General Styles */
+/* Modal Background */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px); /* Frosted glass effect */
+  background: rgba(255, 255, 255, 0.2); /* Slight transparency */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
 }
 
+/* Modal Content */
 .modal-content {
-  background-color: #fff;
+  background: rgba(255, 255, 255, 0.75); /* Semi-transparent background */
+  backdrop-filter: blur(40px); /* Strong blur for the Apple effect */
   padding: 2rem;
-  border-radius: 10px;
+  border-radius: 16px;
   max-width: 500px;
   width: 100%;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   position: relative;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
+/* Close Button */
 .close-button {
   position: absolute;
   top: 1rem;
@@ -103,18 +108,22 @@ export default {
   font-size: 1.5rem;
   cursor: pointer;
   color: #333;
+  transition: color 0.3s ease;
 }
-
 .close-button:hover {
-  color: #ff6f61;
+  color: #007aff; /* Apple blue */
 }
 
+/* Modal Title */
 .modal-title {
-  font-size: 2rem;
+  font-size: 1.8rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  color: #000;
   margin-bottom: 1.5rem;
   text-align: center;
 }
 
+/* Form Group */
 .form-group {
   margin-bottom: 1.5rem;
 }
@@ -124,15 +133,21 @@ label {
   margin-bottom: 0.5rem;
   font-size: 1rem;
   color: #333;
+  font-family: inherit;
 }
 
+/* Input and Textarea */
 input,
 textarea {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1rem; /* Prevent mobile zoom-in */
+  padding: 0.8rem;
+  border: 1px solid rgba(60, 60, 67, 0.15);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: rgba(255, 255, 255, 0.75);
+  outline: none;
+  transition: border-color 0.3s ease;
 }
 
 textarea {
@@ -140,23 +155,32 @@ textarea {
   height: 120px;
 }
 
+/* Focus States */
+input:focus,
+textarea:focus {
+  border-color: #007aff; /* Apple blue */
+}
+
+/* Submit Button */
 .submit-button {
-  background-color: #ff6f61;
-  color: #fff;
-  padding: 1rem 2rem;
+  background-color: #007aff;
+  color: white;
+  padding: 1rem;
   border: none;
   border-radius: 50px;
   font-size: 1.2rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  width: 100%; /* Full-width button for mobile */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
   max-width: 400px;
-  margin: 0 auto; /* Center the button */
+  margin: 0 auto;
   display: block;
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
 }
 
 .submit-button:hover {
-  background-color: #e65b50;
+  background-color: #005bb5;
+  box-shadow: 0 6px 16px rgba(0, 122, 255, 0.4);
 }
 
 /* Responsive Adjustments */
@@ -167,12 +191,12 @@ textarea {
   }
 
   .modal-title {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
   }
 
   input,
   textarea {
-    font-size: 1rem; /* Prevent zoom on mobile */
+    font-size: 1rem;
   }
 
   .submit-button {
@@ -188,12 +212,12 @@ textarea {
   }
 
   .modal-title {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
   }
 
   input,
   textarea {
-    font-size: 1rem; /* Ensure no zoom on mobile */
+    font-size: 0.9rem;
   }
 
   .submit-button {
@@ -202,7 +226,7 @@ textarea {
   }
 }
 
-/* Styles for Video Background */
+/* Video Background */
 .hero {
   position: relative;
   height: 100vh;
@@ -225,7 +249,6 @@ textarea {
     object-fit: contain;
   }
 }
-
 </style>
 
 <!-- HTML for the Background Video Section -->

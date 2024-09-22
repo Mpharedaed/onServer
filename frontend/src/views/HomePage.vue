@@ -1,7 +1,8 @@
 <template>
   <div id="home">
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero section">
+      <!-- Hero content -->
       <div class="hero-background">
         <!-- Parallax Background Layers -->
         <div class="parallax-layer layer-1"></div>
@@ -17,7 +18,7 @@
             Join me, Dawlat Emad, on a transformative journey towards self-discovery and personal growth.
           </p>
           <button class="hero-button" @click="openStory">My Story</button>
-          <button class="hero-button" @click="openContact">Contact Me</button> <!-- Contact Me button -->
+          <button class="hero-button" @click="openContact">Contact Me</button>
         </div>
         <div class="hero-image-wrapper">
           <img
@@ -27,7 +28,21 @@
           />
         </div>
       </div>
-      <div class="scroll-indicator" @click="scrollToContent">
+      <div class="scroll-indicator" @click="scrollToSection(1)">
+        <span></span>
+      </div>
+    </section>
+
+    <!-- New Section: Services -->
+    <section class="services section">
+      <div class="container">
+        <h2 class="section-title">Our Services</h2>
+        <p class="section-description">
+          Explore the services we offer to help you on your journey.
+        </p>
+        <!-- Add your services content here -->
+      </div>
+      <div class="scroll-indicator" @click="scrollToSection(0)">
         <span></span>
       </div>
     </section>
@@ -36,24 +51,28 @@
     <StoryModal :showStory="showStory" @close="closeStory" />
 
     <!-- Use the ContactModal component -->
-    <ContactModal :showContact="showContact" @close="closeContact" /> <!-- Contact Me Modal -->
+    <ContactModal :showContact="showContact" @close="closeContact" />
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
-import StoryModal from '@/components/StoryModal.vue'; // Import StoryModal
-import ContactModal from '@/components/ContactModal.vue'; // Import ContactModal
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import StoryModal from '@/components/StoryModal.vue';
+import ContactModal from '@/components/ContactModal.vue';
 
 export default {
   name: 'HomePage',
   components: {
     StoryModal,
-    ContactModal, // Include the ContactModal component
+    ContactModal,
   },
   setup() {
     const showStory = ref(false);
     const showContact = ref(false);
+    const sections = ref([]);
+    const currentSectionIndex = ref(0);
+    const isAnimating = ref(false);
+    const touchStartY = ref(0);
 
     const openStory = () => {
       showStory.value = true;
@@ -75,26 +94,86 @@ export default {
       document.body.style.overflow = 'auto';
     };
 
-    const scrollToContent = () => {
-      const nextSection = document.querySelector('.services');
-      if (nextSection) {
-        nextSection.scrollIntoView({ behavior: 'smooth' });
+    const scrollToSection = (index) => {
+      if (
+        isAnimating.value ||
+        index < 0 ||
+        index >= sections.value.length ||
+        index === currentSectionIndex.value
+      ) {
+        return;
+      }
+
+      isAnimating.value = true;
+      const direction = index > currentSectionIndex.value ? 'down' : 'up';
+
+      const currentSection = sections.value[currentSectionIndex.value];
+      const nextSection = sections.value[index];
+
+      currentSection.classList.add('transition-out', direction);
+      nextSection.style.display = 'block'; // Ensure the next section is visible
+      nextSection.classList.add('transition-in', direction);
+
+      currentSectionIndex.value = index;
+
+      setTimeout(() => {
+        currentSection.classList.remove('transition-out', direction);
+        currentSection.style.display = 'none';
+        nextSection.classList.remove('transition-in', direction);
+        isAnimating.value = false;
+      }, 1000); // Match this duration with CSS animation duration
+    };
+
+    const handleWheel = (event) => {
+      event.preventDefault();
+      if (isAnimating.value) return;
+
+      const delta = event.deltaY;
+      if (delta > 0) {
+        // Scroll down
+        scrollToSection(currentSectionIndex.value + 1);
+      } else if (delta < 0) {
+        // Scroll up
+        scrollToSection(currentSectionIndex.value - 1);
       }
     };
 
-    const handleParallax = () => {
-      const layers = document.querySelectorAll('.parallax-layer');
-      window.addEventListener('scroll', () => {
-        const scrollPosition = window.pageYOffset;
-        layers.forEach((layer) => {
-          const speed = layer.getAttribute('data-speed');
-          layer.style.transform = `translateY(${scrollPosition * speed}px)`;
-        });
-      });
+    const handleTouchStart = (event) => {
+      touchStartY.value = event.touches[0].clientY;
+    };
+
+    const handleTouchEnd = (event) => {
+      const touchEndY = event.changedTouches[0].clientY;
+      const touchDelta = touchStartY.value - touchEndY;
+
+      if (isAnimating.value) return;
+
+      if (touchDelta > 50) {
+        // Swipe up
+        scrollToSection(currentSectionIndex.value + 1);
+      } else if (touchDelta < -50) {
+        // Swipe down
+        scrollToSection(currentSectionIndex.value - 1);
+      }
     };
 
     onMounted(() => {
-      handleParallax();
+      sections.value = document.querySelectorAll('.section');
+      sections.value.forEach((section, index) => {
+        if (index !== 0) {
+          section.style.display = 'none';
+        }
+      });
+
+      window.addEventListener('wheel', handleWheel, { passive: false });
+      window.addEventListener('touchstart', handleTouchStart, { passive: false });
+      window.addEventListener('touchend', handleTouchEnd, { passive: false });
+    });
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchend', handleTouchEnd);
     });
 
     return {
@@ -104,12 +183,11 @@ export default {
       showContact,
       openContact,
       closeContact,
-      scrollToContent,
+      scrollToSection,
     };
   },
 };
 </script>
-
 
 
 
