@@ -1,0 +1,178 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+/* Reset and General Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  overflow: hidden; /* Prevent default scrolling */
+}
+
+#home {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Sections */
+.section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Transition Styles */
+.slide-up-enter-active,
+.slide-up-leave-active,
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition: transform 0.8s ease, opacity 0.8s ease;
+}
+
+.slide-up-enter-from,
+.slide-up-leave-to {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.slide-up-enter-to,
+.slide-up-leave-from {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.slide-down-enter-from,
+.slide-down-leave-to {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.slide-down-enter-to,
+.slide-down-leave-from {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Responsive Adjustments for the Hero and Services sections */
+@media (max-width: 992px) {
+  .hero-container {
+    flex-direction: column;
+    padding: 0 2rem;
+    text-align: center;
+  }
+
+  .hero-content {
+    animation: fadeInUp 1s forwards;
+    order: 2;
+  }
+
+  .hero-image-wrapper {
+    margin-bottom: 2rem;
+    animation: fadeInUp 1s forwards;
+    order: 1;
+  }
+
+  .hero-title {
+    font-size: 3rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.2rem;
+  }
+
+  .hero-image {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .hero-image {
+    width: 250px;
+    height: 250px;
+  }
+
+  .scroll-indicator span {
+    width: 20px;
+    height: 20px;
+  }
+  
+}
+/* Navigation Dots - Integrated with Design */
+.navigation-dots {
+    position: absolute;
+    right: 50px; /* Move dots closer to the content */
+    top: 60%; /* Adjust top positioning for better alignment */
+    transform: translateY(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    backdrop-filter: blur(10px); /* Apple-like blur effect */
+    background: rgba(255, 255, 255, 0.15); /* Softer, more subtle background */
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Softer shadow */
+  }
+  
+  .navigation-dots span {
+    width: 12px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.5); /* Lighter background for better blend */
+    border: 2px solid rgba(255, 255, 255, 0.8); 
+    border-radius: 50%; 
+    cursor: pointer;
+    transition: all 0.4s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  }
+  
+  .navigation-dots span:hover {
+    background: rgba(255, 255, 255, 0.7);
+    transform: scale(1.2); /* Hover effect for user feedback */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .navigation-dots span.active {
+    background: linear-gradient(135deg, #4a4ae1, #6c63ff); /* Match theme colors */
+    width: 14px;
+    height: 14px;
+    transform: scale(1.3); 
+    border: 2px solid rgba(255, 255, 255, 0.9); 
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
+  }
+  
+  /* For Mobile - Adjust positioning */
+  @media (max-width: 768px) {
+    .navigation-dots {
+      right: 20px; /* Adjust closer for mobile */
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 5px;
+      backdrop-filter: blur(8px); /* Adjust blur on smaller screens */
+    }
+  
+    .navigation-dots span {
+      width: 10px;
+      height: 10px;
+    }
+  
+    .navigation-dots span.active {
+      width: 12px;
+      height: 12px;
+    }
+  }
+  

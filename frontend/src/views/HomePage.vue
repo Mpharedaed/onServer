@@ -283,8 +283,17 @@ export default {
 
 <!-- Importing your CSS files -->
 <style scoped>
-@import '../../dist/css/hero.css';
-@import '../../dist/css/global.css';
-@import '../../dist/css/services.css';
+
+
+@import "@/assets/images/css/global.css";
+
+
+
+
+@import '@/assets/css/hero.css';
+
+
+@import '@/assets/css/services.css';
+
 
 </style>
