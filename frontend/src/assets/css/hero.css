@@ -1,192 +1,269 @@
 /* Hero Section */
 .hero {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Hero Background */
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.parallax-layer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+.layer-1 {
+  background-image: url('@/assets/images/layer1.png');
+  z-index: 1;
+}
+
+.layer-2 {
+  background-image: url('@/assets/images/layer2.png');
+  z-index: 2;
+  opacity: 0.5;
+}
+
+.layer-3 {
+  background-image: url('@/assets/images/layer3.png');
+  z-index: 3;
+  opacity: 0.3;
+}
+
+.background-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(0, 0, 0, 0.6),
+    rgba(0, 0, 0, 0.3)
+  );
+  z-index: 4;
+}
+
+.color-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(60, 64, 239, 0.3);
+  z-index: 5;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* For Safari support */
+}
+
+/* Hero Content */
+.hero-container {
+  position: relative;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding: 0 5%;
+}
+
+.hero-content {
+  flex: 1;
+  animation: fadeInLeft 1s forwards;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hero-button {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  margin: 0 10px;
+  transition: background-color 0.3s ease;
+  border: 1px solid #fff;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px); /* For Safari support */
+}
+
+.hero-button:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.hero-image-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeInRight 1s forwards;
+  position: relative;
+}
+
+.hero-image {
+  border-radius: 50%;
+  width: 400px;
+  height: 400px;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  border: 5px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.hero-image::after {
+  content: '';
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+}
+
+/* Scroll Indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+
+.scroll-indicator span {
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-bottom: 3px solid #fff;
+  border-right: 3px solid #fff;
+  transform: rotate(45deg);
+  animation: scrollDown 2s infinite;
+}
+
+/* Animations */
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
   }
-  
-  /* Hero Background */
-  .hero-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    overflow: hidden;
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
-  
-  .parallax-layer {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
   }
-  
-  .layer-1 {
-    background-image: url('@/assets/images/layer1.png');
-    z-index: 1;
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
-  
-  .layer-2 {
-    background-image: url('@/assets/images/layer2.png');
-    z-index: 2;
-    opacity: 0.5;
+}
+
+@keyframes scrollDown {
+  0% {
+    transform: translateX(-50%) rotate(45deg) translateY(0);
+    opacity: 1;
   }
-  
-  .layer-3 {
-    background-image: url('@/assets/images/layer3.png');
-    z-index: 3;
-    opacity: 0.3;
+  100% {
+    transform: translateX(-50%) rotate(45deg) translateY(15px);
+    opacity: 0;
   }
-  
-  .background-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3));
-    z-index: 4;
-  }
-  
-  .color-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(60, 64, 239, 0.3);
-    z-index: 5;
-    backdrop-filter: blur(10px);
-  }
-  
-  /* Hero Content */
+}
+
+/* Responsive Adjustments */
+
+/* Tablets and smaller devices */
+@media (max-width: 992px) {
   .hero-container {
-    position: relative;
-    z-index: 5;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 100%;
-    padding: 0 5%;
-  }
-  
-  .hero-content {
-    flex: 1;
-    animation: fadeInLeft 1s forwards;
-  }
-  
-  .hero-title {
-    font-size: 3.5rem;
-    margin-bottom: 1rem;
-    font-weight: 700;
-    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  }
-  
-  .hero-subtitle {
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
-    line-height: 1.5;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-  
-  .hero-button {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: #fff;
-    padding: 1rem 2rem;
-    border-radius: 50px;
-    font-size: 1.2rem;
-    margin: 0 10px;
-    transition: background-color 0.3s ease;
-    border: 1px solid #fff;
-    backdrop-filter: blur(5px);
-  }
-  
-  .hero-button:hover {
-    background-color: rgba(255, 255, 255, 0.4);
-  }
-  
-  .hero-image-wrapper {
-    flex: 1;
-    display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
-    animation: fadeInRight 1s forwards;
-    position: relative;
+    text-align: center;
+    padding: 5% 5%;
   }
-  
+
+  .hero-content {
+    animation: fadeInUp 1s forwards;
+    order: 2;
+    margin-top: 2rem;
+  }
+
+  .hero-image-wrapper {
+    order: 1;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.2rem;
+  }
+
   .hero-image {
-    border-radius: 50%;
-    width: 400px;
-    height: 400px;
-    object-fit: cover;
-    border: 5px solid rgba(255, 255, 255, 0.5);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    width: 300px;
+    height: 300px;
   }
-  
-  .hero-image::after {
-    content: '';
-    position: absolute;
-    top: -20px;
-    right: -20px;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    border: 2px dashed rgba(255, 255, 255, 0.5);
+}
+
+/* Mobile devices */
+@media (max-width: 576px) {
+  .hero-title {
+    font-size: 2rem;
   }
-  
-  /* Scroll Indicator */
-  .scroll-indicator {
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    cursor: pointer;
+
+  .hero-subtitle {
+    font-size: 1rem;
   }
-  
+
+  .hero-image {
+    width: 250px;
+    height: 250px;
+  }
+
+  .hero-button {
+    font-size: 1rem;
+    padding: 0.8rem 1.5rem;
+    margin: 0.5rem;
+  }
+
+  .hero-content {
+    margin-top: 1rem;
+  }
+
   .scroll-indicator span {
-    display: block;
-    width: 30px;
-    height: 30px;
-    border-bottom: 3px solid #fff;
-    border-right: 3px solid #fff;
-    transform: rotate(45deg);
-    animation: scrollDown 2s infinite;
+    width: 20px;
+    height: 20px;
   }
-  
-  @keyframes fadeInLeft {
-    from {
-      opacity: 0;
-      transform: translateX(-50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  @keyframes fadeInRight {
-    from {
-      opacity: 0;
-      transform: translateX(50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  @keyframes scrollDown {
-    0% {
-      transform: translateX(-50%) rotate(45deg) translateY(0);
-      opacity: 1;
-    }
-    100% {
-      transform: translateX(-50%) rotate(45deg) translateY(15px);
-      opacity: 0;
-    }
-  }
-  
+}
